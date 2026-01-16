@@ -1,5 +1,6 @@
 "use client";
 
+import { get } from "http";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 
 interface TransactionFormProps {
@@ -27,7 +28,7 @@ export default function TransactionForm({ action, onClose }: TransactionFormProp
   const handleSubmitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onClose();
-  };
+  }
 
   return (
     <form onSubmit={handleSubmitForm} className="mt-4 flex flex-col gap-2">
@@ -58,13 +59,7 @@ export default function TransactionForm({ action, onClose }: TransactionFormProp
         </fieldset>
         <fieldset className="w-full flex flex-col">
           <label className="text-gray-900 text-sm">Data:</label>
-          <input
-            type="date"
-            name="date"
-            className="w-full border border-gray-400 rounded px-1 py-1 h-8.5"
-            value={form.date}
-            onChange={handleChangeInput}
-          />
+          <input type="date" name="date" className="w-full border border-gray-400 rounded px-1 py-1 h-8.5" value={form.date} onChange={handleChangeInput} />
         </fieldset>
       </div>
       <button type="submit" className="bg-blue-500 text-white h-10 mt-2 rounded">
