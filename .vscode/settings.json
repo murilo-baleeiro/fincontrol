@@ -14,6 +14,20 @@
       "username": "root",
       "password": "root",
       "database": "fincontrol_db"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "192.168.1.100",
+      "port": 3306,
+      "driver": "MySQL",
+      "database": "fincontrol_db",
+      "username": "root",
+      "password": "root",
+      "name": "localhost"
     }
   ]
 }
