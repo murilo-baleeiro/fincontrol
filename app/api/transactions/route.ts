@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getTransactions, createTransaction, deleteTransaction } from "@/lib/db";
 
 export async function GET() {
@@ -21,6 +22,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Campos obrigatórios faltando" }, { status: 400 });
     }
     await createTransaction({ action, description, value, date });
+    revalidatePath("/");
     return NextResponse.json({ message: "Transação criada com sucesso" }, { status: 201 });
   } catch (error) {
     console.error("POST /transactions error:", error);
@@ -36,6 +38,8 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ message: "ID da transação é obrigatório" }, { status: 400 });
     }
     await deleteTransaction(Number(id));
+    revalidatePath("/");
+    revalidatePath("/transactions");
     return NextResponse.json({ message: "Transação deletada com sucesso" }, { status: 200 });
   } catch (error) {
     console.error("DELETE /transactions error:", error);
