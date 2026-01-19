@@ -1,0 +1,19 @@
+{
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "26.246.216.159",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "mucaserver",
+      "username": "root",
+      "password": "root",
+      "database": "fincontrol_db"
+    }
+  ]
+}

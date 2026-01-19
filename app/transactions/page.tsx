@@ -1,20 +1,68 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { CircleArrowUp, CircleArrowDown } from "lucide-react";
-import { useState, ChangeEvent, FormEvent } from "react";
 import TransactionCard from "./_components/TransactionCard";
 import TransactionForm from "./_components/TransactionForm";
 
-export default function Transactions() {
-  const [showForm, setShowForm] = useState(false);
-  const [action, setAction] = useState("");
+interface Transaction {
+  id: number;
+  action: "inbound" | "outbound";
+  description: string;
+  value: number;
+  date: string;
+}
 
-  const handleCloseForm = () => setShowForm(false);
+export default function Transactions() {
+  const [action, setAction] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [openCardId, setOpenCardId] = useState<number | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  async function fetchTransactions() {
+    try {
+      const response = await fetch("/api/transactions");
+      const data = await response.json();
+      setTransactions(data);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+  };
 
   const handleActiveForm = (action: string) => {
     setAction(action);
     setShowForm(true);
   };
+
+  const handleOpenCard = (id: number) => {
+    setOpenCardId(id);
+  };
+
+  const handleCloseCard = () => {
+    setOpenCardId(null);
+  };
+
+  async function handleDeleteTransaction(id: number) {
+    try {
+      const response = await fetch(`/api/transactions?id=${id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        fetchTransactions();
+      }
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+    }
+    setOpenCardId(null);
+  }
 
   return (
     <main className="px-4">
@@ -34,10 +82,22 @@ export default function Transactions() {
           <span>Receita</span>
         </button>
       </div>
-      {showForm && <TransactionForm action={action} onClose={handleCloseForm} />}
-      <section className="mt-4 space-y-4">
-        <TransactionCard action="inbound" title="Salário" date="15 Nov. 2026" value={4000} />
-        <TransactionCard action="outbound" title="Combustível" date="15 Nov. 2026" value={50} />
+      {showForm && <TransactionForm action={action} onClose={handleCloseForm} onSuccess={fetchTransactions} />}
+      <section className="mt-4 space-y-4 overflow-y-scroll h-[80vh] pb-28">
+        {transactions.map((t) => (
+          <TransactionCard
+            key={t.id}
+            id={t.id}
+            action={t.action}
+            title={t.description}
+            date={t.date}
+            value={t.value}
+            isOpen={openCardId === t.id}
+            onOpen={handleOpenCard}
+            onClose={handleCloseCard}
+            onDelete={handleDeleteTransaction}
+          />
+        ))}
       </section>
     </main>
   );

@@ -8,7 +8,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="w-full h-16 absolute bottom-0 flex justify-around items-center border-t border-gray-200">
+    <nav className="w-full h-16 absolute bottom-0 flex justify-around items-center border-t border-gray-200 bg-white z-0">
       <Link
         href="/"
         className={`flex flex-col justify-center items-center ${pathname == "/" && "text-blue-600 font-semibold"}`}

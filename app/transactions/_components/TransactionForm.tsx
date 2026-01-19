@@ -1,33 +1,80 @@
 "use client";
 
-import { get } from "http";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 
 interface TransactionFormProps {
   action: string;
   onClose: () => void;
+  onSuccess: () => void;
 }
 
-export default function TransactionForm({ action, onClose }: TransactionFormProps) {
+function formatCurrency(value: string) {
+  const digits = value.replace(/\D/g, "");
+  const number = Number(digits) / 100;
+
+  return number.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function parseCurrency(value: string): number {
+  return Number(value.replace(/\./g, "").replace(",", "."));
+}
+
+export default function TransactionForm({ action, onClose, onSuccess }: TransactionFormProps) {
   const today = new Date().toISOString().split("T")[0];
 
   const [form, setForm] = useState({
     action,
     description: "",
-    value: 0,
+    value: "",
     date: today,
   });
 
-  useEffect(() => setForm((prev) => ({ ...prev, action })), [action]);
+  useEffect(() => {
+    setForm((prev) => ({ ...prev, action }));
+  }, [action]);
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
+
+    if (name === "value") {
+      const masked = formatCurrency(value);
+      setForm((prev) => ({ ...prev, value: masked }));
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitForm = (e: FormEvent<HTMLFormElement>) => {
+  async function handleSubmitForm(e: FormEvent) {
     e.preventDefault();
-    onClose();
+
+    const parsedValue = parseCurrency(form.value);
+
+    if (isNaN(parsedValue) || parsedValue <= 0) {
+      alert("Valor inválido");
+      return;
+    }
+
+    const payload = {
+      ...form,
+      value: parsedValue,
+    };
+
+    const response = await fetch("/api/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      onSuccess();
+      onClose();
+    } else {
+      alert("Erro ao criar transação");
+    }
   }
 
   return (
@@ -43,27 +90,29 @@ export default function TransactionForm({ action, onClose }: TransactionFormProp
           onChange={handleChangeInput}
         />
       </fieldset>
+
       <div className="flex flex-row gap-4">
         <fieldset className="flex flex-col">
           <label className="text-gray-900 text-sm">Valor:</label>
           <input
             type="text"
             name="value"
-            inputMode="decimal"
-            pattern="^\d+([.,]\d{1,2})?$"
+            inputMode="numeric"
             placeholder="0,00"
             className="border border-gray-400 rounded px-2 py-1"
             value={form.value}
             onChange={handleChangeInput}
           />
         </fieldset>
+
         <fieldset className="w-full flex flex-col">
           <label className="text-gray-900 text-sm">Data:</label>
-          <input type="date" name="date" className="w-full border border-gray-400 rounded px-1 py-1 h-8.5" value={form.date} onChange={handleChangeInput} />
+          <input type="date" name="date" className="w-full border border-gray-400 rounded px-1 py-1" value={form.date} onChange={handleChangeInput} />
         </fieldset>
       </div>
+
       <button type="submit" className="bg-blue-500 text-white h-10 mt-2 rounded">
-        Registrar {form.action == "inbound" ? "Receita" : "Despesa"}
+        Registrar {form.action === "inbound" ? "Receita" : "Despesa"}
       </button>
     </form>
   );
