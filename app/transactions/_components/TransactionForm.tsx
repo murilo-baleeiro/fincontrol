@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/UI/Button";
+import Input from "@/components/UI/Input";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 
 interface TransactionFormProps {
@@ -79,41 +81,12 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
 
   return (
     <form onSubmit={handleSubmitForm} className="mt-4 flex flex-col gap-2">
-      <fieldset className="flex flex-col">
-        <label className="text-gray-900 text-sm">Descrição:</label>
-        <input
-          type="text"
-          name="description"
-          placeholder="Ex.: Salário, Internet"
-          className="border border-gray-400 rounded px-2 py-1"
-          value={form.description}
-          onChange={handleChangeInput}
-        />
-      </fieldset>
-
+      <Input label="Descrição:" name="description" placeholder="Ex.: Salário, Internet" value={form.description} onChange={handleChangeInput} />
       <div className="flex flex-row gap-4">
-        <fieldset className="flex flex-col">
-          <label className="text-gray-900 text-sm">Valor:</label>
-          <input
-            type="text"
-            name="value"
-            inputMode="numeric"
-            placeholder="0,00"
-            className="border border-gray-400 rounded px-2 py-1"
-            value={form.value}
-            onChange={handleChangeInput}
-          />
-        </fieldset>
-
-        <fieldset className="w-full flex flex-col">
-          <label className="text-gray-900 text-sm">Data:</label>
-          <input type="date" name="date" className="w-full border border-gray-400 rounded px-1 py-1" value={form.date} onChange={handleChangeInput} />
-        </fieldset>
+        <Input label="Valor:" name="value" inputMode="numeric" placeholder="0,00" value={form.value} onChange={handleChangeInput} />
+        <Input label="Data:" type="date" name="date" value={form.date} onChange={handleChangeInput} className="w-full h-8.5 border border-gray-400 rounded px-1 py-1" />
       </div>
-
-      <button type="submit" className="bg-blue-500 text-white h-10 mt-2 rounded">
-        Registrar {form.action === "inbound" ? "Receita" : "Despesa"}
-      </button>
+      <Button className="mt-2">Registrar {form.action === "inbound" ? "Receita" : "Despesa"}</Button>
     </form>
   );
 }

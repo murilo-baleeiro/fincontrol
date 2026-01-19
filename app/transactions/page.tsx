@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CircleArrowUp, CircleArrowDown } from "lucide-react";
 import TransactionCard from "./_components/TransactionCard";
 import TransactionForm from "./_components/TransactionForm";
+import TransactionCardSkeleton from "./_components/TransactionCardSkeleton";
 
 interface Transaction {
   id: number;
@@ -15,17 +16,21 @@ interface Transaction {
 
 export default function Transactions() {
   const [action, setAction] = useState("");
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [openCardId, setOpenCardId] = useState<number | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   async function fetchTransactions() {
     try {
+      setLoading(true);
       const response = await fetch("/api/transactions");
       const data = await response.json();
       setTransactions(data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -84,20 +89,22 @@ export default function Transactions() {
       </div>
       {showForm && <TransactionForm action={action} onClose={handleCloseForm} onSuccess={fetchTransactions} />}
       <section className="mt-4 space-y-4 overflow-y-scroll h-[80vh] pb-28">
-        {transactions.map((t) => (
-          <TransactionCard
-            key={t.id}
-            id={t.id}
-            action={t.action}
-            title={t.description}
-            date={t.date}
-            value={t.value}
-            isOpen={openCardId === t.id}
-            onOpen={handleOpenCard}
-            onClose={handleCloseCard}
-            onDelete={handleDeleteTransaction}
-          />
-        ))}
+        {loading
+          ? Array.from({ length: 6 }).map((_, index) => <TransactionCardSkeleton key={index} />)
+          : transactions.map(({ id, action, description, date, value }) => (
+              <TransactionCard
+                key={id}
+                id={id}
+                action={action}
+                title={description}
+                date={date}
+                value={value}
+                isOpen={openCardId === id}
+                onOpen={handleOpenCard}
+                onClose={handleCloseCard}
+                onDelete={handleDeleteTransaction}
+              />
+            ))}
       </section>
     </main>
   );
