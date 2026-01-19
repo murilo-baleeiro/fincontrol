@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { ReactNode, useRef, useState } from "react";
 
 interface GroupConfigProps {
@@ -13,8 +14,9 @@ export default function GroupConfig({ title, children }: GroupConfigProps) {
 
   return (
     <div className="border border-gray-200 rounded p-2">
-      <button onClick={() => setOpen(!open)} className="flex gap-1 items-center w-full">
+      <button onClick={() => setOpen(!open)} className="flex flex-row justify-between gap-1 items-center w-full">
         {title}
+        <ChevronRight strokeWidth={1.25} className={`transition-all duration-100 ${open && "rotate-90"}`} />
       </button>
 
       <div
