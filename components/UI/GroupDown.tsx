@@ -1,21 +1,21 @@
 "use client";
 
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { ReactNode, useEffect, useRef, useState } from "react";
 
 interface GroupDownProps {
-  title: string;
+  title: string | ReactNode;
   children: ReactNode;
 }
 
 export default function GroupDown({ title, children }: GroupDownProps) {
   const [open, setOpen] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState("0px");
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open && contentRef.current) setHeight(`${contentRef.current.scrollHeight}px`);
-  }, [children, open]); // 👈 recalcula quando o conteúdo muda
+  }, [children, open]);
 
   return (
     <div className="border border-gray-200 rounded p-2">
@@ -24,11 +24,7 @@ export default function GroupDown({ title, children }: GroupDownProps) {
         <ChevronRight strokeWidth={1.25} className={`transition-all duration-100 ${open && "rotate-90"}`} />
       </button>
 
-      <div
-        ref={contentRef}
-        style={{ maxHeight: open ? height : "0px" }}
-        className="overflow-hidden transition-all duration-200 ease-out"
-      >
+      <div ref={contentRef} style={{ maxHeight: open ? height : "0px" }} className="overflow-hidden transition-all duration-200 ease-out">
         <div className="mt-2 px-1">{children}</div>
       </div>
     </div>

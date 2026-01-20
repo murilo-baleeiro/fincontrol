@@ -17,12 +17,18 @@ export default function Home() {
 
   useEffect(() => {
     fetchBalance();
+    fetchExpenses();
   }, []);
 
   async function fetchBalance() {
-    const response = await fetch("/api/balance");
+    const response = await fetch("/api/finances/balance");
     const data = await response.json();
     setBalance(data.balance);
+  }
+
+  async function fetchExpenses() {
+    const response = await fetch("/api/finances/expenses");
+    const data = await response.json();
     setExpenses(data.expenses);
   }
 
@@ -30,7 +36,7 @@ export default function Home() {
     <main className="flex flex-col gap-4 justify-center mt-3 px-2">
       <div className="w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-blue-500 text-white rounded-lg">
         <p className="text-sm font-light">Ativos Totais:</p>
-        <p className={`text-2xl font-bold ${balance < 0 && "text-red-500"}`}>{formatCurrency(balance)}</p>
+        <p className="text-2xl font-bold">{formatCurrency(balance)}</p>
       </div>
       <div className="w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-fuchsia-600 text-white rounded-lg">
         <p className="text-sm font-light">Gastos Totais do Mês:</p>

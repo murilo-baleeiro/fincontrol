@@ -91,15 +91,11 @@ export default function Transactions() {
       <section className="mt-4 space-y-4 overflow-y-scroll h-[80vh] pb-28">
         {loading
           ? Array.from({ length: 6 }).map((_, index) => <TransactionCardSkeleton key={index} />)
-          : transactions.map(({ id, action, description, date, value }) => (
+          : transactions.map((transaction) => (
               <TransactionCard
-                key={id}
-                id={id}
-                action={action}
-                title={description}
-                date={date}
-                value={value}
-                isOpen={openCardId === id}
+                key={transaction.id}
+                transaction={transaction}
+                isOpen={openCardId === transaction.id}
                 onOpen={handleOpenCard}
                 onClose={handleCloseCard}
                 onDelete={handleDeleteTransaction}

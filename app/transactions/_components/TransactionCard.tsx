@@ -3,29 +3,24 @@
 import { Trash2, CircleArrowDown, CircleArrowUp } from "lucide-react";
 import { useState, useEffect } from "react";
 
-interface TransactionCardProps {
+interface Transaction {
   id: number;
   action: "inbound" | "outbound";
-  title: string;
+  description: string;
   date: string;
   value: number;
+  category?: string;
+}
+
+interface TransactionCardProps {
+  transaction: Transaction;
   isOpen: boolean;
   onOpen: (id: number) => void;
   onClose: () => void;
   onDelete: (id: number) => void;
 }
 
-export default function TransactionCard({
-  id,
-  action,
-  title,
-  date,
-  value,
-  isOpen,
-  onOpen,
-  onClose,
-  onDelete,
-}: TransactionCardProps) {
+export default function TransactionCard({ transaction: { id, action, description, date, value, category }, isOpen, onOpen, onClose, onDelete }: TransactionCardProps) {
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
 
@@ -72,8 +67,8 @@ export default function TransactionCard({
 
   return (
     <div className="relative bg-white border border-gray-200 rounded overflow-hidden">
-      <div className="absolute inset-y-0 right-0 w-20 bg-red-500 flex items-center justify-center rounded-e">
-        <button onClick={() => onDelete(id)}>
+      <div className="absolute inset-y-0 right-0 w-20 border flex items-center justify-center rounded-e">
+        <button onClick={() => onDelete(id)} className="bg-red-500">
           <Trash2 className="text-white" />
         </button>
       </div>
@@ -93,13 +88,11 @@ export default function TransactionCard({
 
         <div className="w-full flex justify-between items-center overflow-hidden">
           <div className="min-w-0">
-            <p className="truncate font-normal">{title}</p>
+            <p className="truncate font-normal">{description}</p>
             <p className="text-xs text-gray-500">{formatDate(date)}</p>
           </div>
 
-          <p
-            className={`font-semibold whitespace-nowrap ${action === "outbound" ? "text-red-500" : "text-emerald-500"}`}
-          >
+          <p className={`font-semibold whitespace-nowrap ${action === "outbound" ? "text-red-500" : "text-emerald-500"}`}>
             {action === "outbound" ? "-" : "+"}R${" "}
             {value.toLocaleString("pt-BR", {
               minimumFractionDigits: 2,

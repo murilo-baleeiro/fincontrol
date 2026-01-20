@@ -7,7 +7,7 @@ interface Categories extends RowDataPacket {
 }
 
 export async function getCategories() {
-  const [rows] = await db.query<Categories[]>("SELECT * FROM categories");
+  const [rows] = await db.query<Categories[]>(`SELECT * FROM categories ORDER BY created_at ASC`);
   return rows;
 }
 

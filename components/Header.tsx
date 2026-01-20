@@ -10,6 +10,7 @@ export default function Header() {
   const pageTitleMap: Record<string, string> = {
     "/transactions": "Transações",
     "/config": "Configurações",
+    "/debts": "Contas",
   };
 
   if (pathname != "/") {

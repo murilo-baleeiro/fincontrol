@@ -2,9 +2,10 @@
 
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
+import GroupDown from "@/components/UI/GroupDown";
+
 import { Check, Minus, X } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import GroupDown from "./GroupConfig";
 
 interface Categories {
   id: number;
@@ -12,11 +13,9 @@ interface Categories {
 }
 
 export default function CategoriesForm() {
-  const [confirmOpenId, setConfirmOpenId] = useState<number | null>(null);
+  const [form, setForm] = useState({ name: "" });
   const [categories, setCategories] = useState<Categories[]>([]);
-  const [form, setForm] = useState({
-    name: "",
-  });
+  const [confirmOpenId, setConfirmOpenId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchCategories();
@@ -69,7 +68,7 @@ export default function CategoriesForm() {
         method: "DELETE",
       });
       if (!response.ok) {
-        alert("Erro ao remover categoria");
+        alert("Erro ao deletar categoria");
         return;
       }
       if (response.ok) {
@@ -92,10 +91,7 @@ export default function CategoriesForm() {
   return (
     <main className="px-4 mt-4">
       <GroupDown title="Categorias">
-        <form
-          className="flex flex-row gap-2 items-end justify-between border-t border-gray-200 pt-2"
-          onSubmit={handleSubmitForm}
-        >
+        <form className="flex flex-row gap-2 items-end justify-between border-t border-gray-200 pt-2" onSubmit={handleSubmitForm}>
           <Input name="name" placeholder="Nome da categoria" value={form.name} onChange={handleChangeInput} />
           <Button type="submit" className="flex-1 py-1">
             Adicionar
