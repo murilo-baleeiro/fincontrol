@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRightLeft, House, Wrench } from "lucide-react";
+import { ArrowRightLeft, DollarSign, House, Wrench } from "lucide-react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -24,6 +24,13 @@ export default function Navbar() {
       >
         <ArrowRightLeft strokeWidth={1} />
         <span>Transações</span>
+      </Link>
+      <Link
+        href="/debts"
+        className={`flex flex-col justify-center items-center ${pathname == "/debts" && "text-blue-600 font-semibold"}`}
+      >
+        <DollarSign strokeWidth={1} />
+        <span>Contas</span>
       </Link>
       <Link
         href="/config"

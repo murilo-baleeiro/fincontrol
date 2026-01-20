@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getTotalBalance } from "@/lib/db";
+import { getTotalBalance, getTotalExpenses } from "@/lib/db";
 
 export async function GET() {
   try {
-    const balance = await getTotalBalance();
+    const [balance, expenses] = await Promise.all([getTotalBalance(), getTotalExpenses()]);
     return NextResponse.json(
-      { balance },
+      { balance, expenses },
       {
         status: 200,
         headers: {

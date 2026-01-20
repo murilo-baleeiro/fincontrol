@@ -96,7 +96,7 @@ export default function CategoriesForm() {
           className="flex flex-row gap-2 items-end justify-between border-t border-gray-200 pt-2"
           onSubmit={handleSubmitForm}
         >
-          <Input name="name" value={form.name} onChange={handleChangeInput} />
+          <Input name="name" placeholder="Nome da categoria" value={form.name} onChange={handleChangeInput} />
           <Button type="submit" className="flex-1 py-1">
             Adicionar
           </Button>
