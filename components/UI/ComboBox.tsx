@@ -12,7 +12,7 @@ export default function ComboBox({ label, options, value, onChange }: ComboBoxPr
       {label && <label>{label}</label>}
 
       <select className="w-full px-2 py-1.5 border border-gray-400 rounded" value={value ?? ""} onChange={(e) => onChange(parseInt(e.target.value))}>
-        <option value="" disabled>
+        <option value={null!} disabled>
           Selecione uma opção
         </option>
 
