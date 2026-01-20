@@ -3,9 +3,9 @@ import { getTotalBalance, getTotalExpenses } from "@/lib/db";
 
 export async function GET() {
   try {
-    const [balance, expenses] = await Promise.all([getTotalBalance(), getTotalExpenses()]);
+    const balance = await getTotalBalance();
     return NextResponse.json(
-      { balance, expenses },
+      { balance },
       {
         status: 200,
         headers: {

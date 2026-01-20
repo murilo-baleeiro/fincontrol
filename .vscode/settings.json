@@ -5,21 +5,6 @@
         "authProtocol": "default",
         "enableSsl": "Disabled"
       },
-      "ssh": "Disabled",
-      "previewLimit": 50,
-      "server": "26.246.216.159",
-      "port": 3306,
-      "driver": "MySQL",
-      "name": "mucaserver",
-      "username": "root",
-      "password": "root",
-      "database": "fincontrol_db"
-    },
-    {
-      "mysqlOptions": {
-        "authProtocol": "default",
-        "enableSsl": "Disabled"
-      },
       "previewLimit": 50,
       "server": "192.168.1.100",
       "port": 3306,
@@ -28,6 +13,21 @@
       "username": "root",
       "password": "root",
       "name": "localhost"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "26.246.216.159",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "mucaserver",
+      "username": "root",
+      "password": "root",
+      "database": "fincontrol_db_dev"
     }
   ]
 }

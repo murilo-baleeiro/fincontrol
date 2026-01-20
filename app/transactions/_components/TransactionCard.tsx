@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2, CircleArrowDown, CircleArrowUp } from "lucide-react";
+import { Trash2, CircleArrowDown, CircleArrowUp, Info } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface Transaction {
@@ -67,8 +67,8 @@ export default function TransactionCard({ transaction: { id, action, description
 
   return (
     <div className="relative bg-white border border-gray-200 rounded overflow-hidden">
-      <div className="absolute inset-y-0 right-0 w-20 border flex items-center justify-center rounded-e">
-        <button onClick={() => onDelete(id)} className="bg-red-500">
+      <div className="absolute inset-y-0 right-0 w-20 flex items-center justify-center rounded-e bg-red-500">
+        <button onClick={() => onDelete(id)}>
           <Trash2 className="text-white" />
         </button>
       </div>
