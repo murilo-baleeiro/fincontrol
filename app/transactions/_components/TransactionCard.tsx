@@ -15,7 +15,17 @@ interface TransactionCardProps {
   onDelete: (id: number) => void;
 }
 
-export default function TransactionCard({ id, action, title, date, value, isOpen, onOpen, onClose, onDelete }: TransactionCardProps) {
+export default function TransactionCard({
+  id,
+  action,
+  title,
+  date,
+  value,
+  isOpen,
+  onOpen,
+  onClose,
+  onDelete,
+}: TransactionCardProps) {
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
 
@@ -75,16 +85,26 @@ export default function TransactionCard({ id, action, title, date, value, isOpen
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {action === "inbound" ? <CircleArrowDown size={36} className="text-emerald-500" /> : <CircleArrowUp size={36} className="text-red-500" />}
+        {action === "inbound" ? (
+          <CircleArrowDown size={36} strokeWidth={1.25} className="text-emerald-500" />
+        ) : (
+          <CircleArrowUp size={36} strokeWidth={1.25} className="text-red-500" />
+        )}
 
-        <div className="w-full flex justify-between items-center">
-          <div>
-            <p>{title}</p>
+        <div className="w-full flex justify-between items-center overflow-hidden">
+          <div className="min-w-0">
+            <p className="truncate font-normal">{title}</p>
             <p className="text-xs text-gray-500">{formatDate(date)}</p>
           </div>
 
-          <p className={`font-semibold ${action === "outbound" ? "text-red-500" : "text-emerald-500"}`}>
-            {action === "outbound" ? "-" : "+"}R$ {value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(".", ",")}
+          <p
+            className={`font-semibold whitespace-nowrap ${action === "outbound" ? "text-red-500" : "text-emerald-500"}`}
+          >
+            {action === "outbound" ? "-" : "+"}R${" "}
+            {value.toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </p>
         </div>
       </div>
