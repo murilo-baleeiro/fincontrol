@@ -1,9 +1,9 @@
 "use client";
 
+import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import ComboBox from "@/components/UI/ComboBox";
-import Input from "@/components/UI/Input";
-import { formatCurrency, parseCurrency } from "@/utils";
+import { maskCurrencyInput, parseCurrency } from "@/utils";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 
 interface TransactionFormProps {
@@ -15,24 +15,32 @@ interface TransactionFormProps {
 export default function TransactionForm({ action, onClose, onSuccess }: TransactionFormProps) {
   const today = new Date().toISOString().split("T")[0];
 
+  const [payments, setPayments] = useState<{ id: string; name: string }[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [form, setForm] = useState({
     action,
     description: "",
     value: "",
     date: today,
     category: null as number | null,
+    payment: null as number | null,
   });
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
-    setForm((prev) => ({ ...prev, action }));
+    setForm(() => ({
+      action: action,
+      description: "",
+      value: "",
+      date: today,
+      category: null as number | null,
+      payment: null as number | null,
+    }));
   }, [action]);
 
   useEffect(() => {
-    if (form.action !== "outbound") return;
     async function loadCategories() {
       try {
-        const response = await fetch("/api/configs/categories");
+        const response = await fetch(`/api/categories?type=${form.action}`);
         const data = await response.json();
         setCategories(data);
       } catch (error) {
@@ -40,6 +48,17 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
       }
     }
 
+    async function loadPayments() {
+      try {
+        const response = await fetch(`/api/payments`);
+        const data = await response.json();
+        setPayments(data);
+      } catch (error) {
+        console.error("Erro ao carregar categorias", error);
+      }
+    }
+
+    loadPayments();
     loadCategories();
   }, [form.action]);
 
@@ -47,7 +66,7 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
     const { name, value } = e.currentTarget;
 
     if (name === "value") {
-      const masked = formatCurrency(value);
+      const masked = maskCurrencyInput(value);
       setForm((prev) => ({ ...prev, value: masked }));
       return;
     }
@@ -58,6 +77,8 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
   async function handleSubmitForm(e: FormEvent) {
     e.preventDefault();
     const parsedValue = parseCurrency(form.value);
+    const parsedCategory = form.category ? parseInt(form.category as unknown as string) : null;
+    const parsedPayment = form.payment ? parseInt(form.payment as unknown as string) : null;
 
     if (isNaN(parsedValue) || parsedValue <= 0) {
       alert("Forneça um valor válido");
@@ -67,6 +88,8 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
     const payload = {
       ...form,
       value: parsedValue,
+      category: parsedCategory,
+      payment: parsedPayment,
     };
 
     const response = await fetch("/api/transactions", {
@@ -90,8 +113,9 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
         <Input label="Valor:" name="value" inputMode="numeric" placeholder="0,00" value={form.value} onChange={handleChangeInput} required />
         <Input label="Data:" type="date" name="date" value={form.date} onChange={handleChangeInput} className="h-8.5 px-2 py-1" />
       </div>
+      <ComboBox label="Categoria:" options={categories} value={form.category} onChange={(id) => setForm((prev) => ({ ...prev, category: id }))} />
       {form.action === "outbound" && (
-        <ComboBox label="Categoria:" options={categories} value={form.category} onChange={(id) => setForm((prev) => ({ ...prev, category: id }))} />
+        <ComboBox label="Método Pagamento:" options={payments} value={form.payment} onChange={(id) => setForm((prev) => ({ ...prev, payment: id }))} />
       )}
       <Button className="mt-2">Salvar {form.action === "inbound" ? "Receita" : "Despesa"}</Button>
     </form>

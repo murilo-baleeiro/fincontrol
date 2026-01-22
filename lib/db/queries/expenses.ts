@@ -28,10 +28,11 @@ export async function getTopExpensesByCategory(limit: number = 5): Promise<{ cat
       C.name AS category,
       SUM(T.value) AS value
     FROM transactions T
-    INNER JOIN categories C ON C.id = T.id_category
-    GROUP BY c.name
+    INNER JOIN categories C ON C.id = T.category_id
+    WHERE T.action = 'outbound'
+    GROUP BY C.name
     ORDER BY value DESC
-    LIMIT ?
+    LIMIT ?;
   `,
     [limit],
   );

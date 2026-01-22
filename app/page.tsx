@@ -41,12 +41,6 @@ export default function Home() {
   }
 
   const maxValueTopExpenses = Math.max(...topExpenses.map((e) => e.total));
-  const maxValueTopRecipes = Math.max(
-    ...[
-      { category: "Salário", total: 2450 },
-      { category: "Freelance", total: 280 },
-    ].map((e) => e.total),
-  );
 
   return (
     <main className="flex flex-col gap-4 justify-center px-2.5 pt-4">
@@ -87,25 +81,24 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="w-full rounded-lg bg-emerald-500 p-4 text-white shadow-md">
-        <h2 className="text-sm font-light">Maiores Fontes de Receita por Tipo:</h2>
+      <div className="w-full rounded-lg bg-red-700 p-4 text-white shadow-md">
+        <h2 className="text-sm font-light">Cartão Crédito - Santander:</h2>
         <div className="mt-4 space-y-3">
           {true ? (
-            [
-              { category: "Salário", total: 2450 },
-              { category: "Freelance", total: 280 },
-            ].map((recipe) => (
-              <div key={recipe.category}>
+            [{ id: 1, cardname: "Santander", used: 0, limit: 900 }].map((card) => (
+              <div key={card.id}>
                 <div className="flex items-center justify-between text-sm">
-                  <span>{recipe.category}</span>
-                  <span className="font-semibold">{formatCurrency(recipe.total)}</span>
+                  <p className="flex flex-row gap-1">
+                    <span className="font-light">Utilizado:</span>
+                    <span className="font-semibold">{formatCurrency(card.used)}</span>
+                  </p>
+                  <p className="font-semibold">Limite: {formatCurrency(card.limit)}</p>
                 </div>
-
                 <div className="mt-1 h-2 w-full rounded-full bg-white/30">
                   <div
                     className="h-2 rounded-full bg-white"
                     style={{
-                      width: `${(recipe.total / maxValueTopRecipes) * 100}%`,
+                      width: `${(card.used / card.limit) * 100}%`,
                     }}
                   />
                 </div>
