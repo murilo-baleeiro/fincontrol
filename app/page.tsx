@@ -1,5 +1,6 @@
 "use client";
 
+import { CreditsCards } from "@/@types";
 import { useEffect, useState } from "react";
 
 function formatCurrency(value: number) {
@@ -11,15 +12,21 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
+interface CreditCardWithUsage extends CreditsCards {
+  spent: number;
+}
+
 export default function Home() {
   const [balance, setBalance] = useState(0);
   const [expenses, setExpenses] = useState(0);
   const [topExpenses, setTopExpenses] = useState<{ category: string; total: number }[]>([]);
+  const [creditCards, setCreditCards] = useState<CreditCardWithUsage[]>([]);
 
   useEffect(() => {
     fetchBalance();
     fetchExpenses();
     fetchTopExpenses();
+    fetchCreditCards();
   }, []);
 
   async function fetchBalance() {
@@ -38,6 +45,16 @@ export default function Home() {
     const response = await fetch("/api/finances/top-expenses");
     const data = await response.json();
     setTopExpenses(data);
+  }
+
+  async function fetchCreditCards() {
+    try {
+      const response = await fetch("/api/credit-cards/usage");
+      const data = await response.json();
+      setCreditCards(data);
+    } catch (error) {
+      console.error("Erro ao buscar cartões de crédito:", error);
+    }
   }
 
   const maxValueTopExpenses = Math.max(...topExpenses.map((e) => e.total));
@@ -82,30 +99,30 @@ export default function Home() {
       </div>
 
       <div className="w-full rounded-lg bg-red-700 p-4 text-white shadow-md">
-        <h2 className="text-sm font-light">Cartão Crédito - Santander:</h2>
+        <h2 className="text-sm font-light">Cartões de Crédito:</h2>
         <div className="mt-4 space-y-3">
-          {true ? (
-            [{ id: 1, cardname: "Santander", used: 0, limit: 900 }].map((card) => (
+          {creditCards.length > 0 ? (
+            creditCards.map((card) => (
               <div key={card.id}>
                 <div className="flex items-center justify-between text-sm">
                   <p className="flex flex-row gap-1">
-                    <span className="font-light">Utilizado:</span>
-                    <span className="font-semibold">{formatCurrency(card.used)}</span>
+                    <span className="font-light">{card.name}</span>
+                    <span className="font-semibold">{formatCurrency(card.spent)}</span>
                   </p>
-                  <p className="font-semibold">Limite: {formatCurrency(card.limit)}</p>
+                  <p className="font-semibold">Limite: {formatCurrency(card.card_limit)}</p>
                 </div>
                 <div className="mt-1 h-2 w-full rounded-full bg-white/30">
                   <div
                     className="h-2 rounded-full bg-white"
                     style={{
-                      width: `${(card.used / card.limit) * 100}%`,
+                      width: `${(card.spent / card.card_limit) * 100}%`,
                     }}
                   />
                 </div>
               </div>
             ))
           ) : (
-            <div className="text-sm font-light text-emerald-100">Nenhuma receita categorizado registrada.</div>
+            <div className="text-sm font-light text-red-100">Nenhum cartão de crédito cadastrado.</div>
           )}
         </div>
       </div>

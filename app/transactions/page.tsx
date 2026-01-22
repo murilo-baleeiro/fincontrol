@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { CircleArrowUp, CircleArrowDown } from "lucide-react";
 
 import TransactionForm from "./_components/TransactionForm";
-import TransactionCard from "../../components/UI/TransactionCard";
-import TransactionCardSkeleton from "../../components/UI/TransactionCardSkeleton";
+import TransactionsList from "./_components/TransactionsList";
 
 interface Transaction {
   id: number;
@@ -97,28 +96,16 @@ export default function Transactions() {
         </button>
       </div>
       {showForm && <TransactionForm action={action} onClose={handleCloseForm} onSuccess={() => fetchTransactions(limit)} />}
-      <section className="mt-4 space-y-4 overflow-y-scroll h-[80vh] pb-28">
-        {loading && Array.from({ length: 6 }).map((_, index) => <TransactionCardSkeleton key={index} />)}
-        {!loading && error && <p className="text-center text-sm text-red-500">{error}</p>}
-        {!loading && !error && transactions.length === 0 && <p className="text-center text-sm text-gray-500">Nenhuma transação encontrada.</p>}
-        {!loading &&
-          !error &&
-          transactions.map((transaction) => (
-            <TransactionCard
-              key={transaction.id}
-              transaction={transaction}
-              isOpen={openCardId === transaction.id}
-              onOpen={handleOpenCard}
-              onClose={handleCloseCard}
-              onDelete={handleDeleteTransaction}
-            />
-          ))}
-        {transactions.length > 0 && (
-          <button className="w-full py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition-colors" onClick={() => setLimit(limit + 15)}>
-            Ver mais
-          </button>
-        )}
-      </section>
+      <TransactionsList
+        transactions={transactions}
+        loading={loading}
+        error={error}
+        openCardId={openCardId}
+        onOpen={handleOpenCard}
+        onClose={handleCloseCard}
+        onDelete={handleDeleteTransaction}
+        onLoadMore={() => setLimit(limit + 15)}
+      />
     </main>
   );
 }

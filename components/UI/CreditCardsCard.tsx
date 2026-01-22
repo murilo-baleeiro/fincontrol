@@ -1,12 +1,12 @@
 "use client";
 
-import { CreditCards } from "@/@types";
+import { CreditsCards } from "@/@types";
 import { formatCurrencyDisplay } from "@/utils";
 import { Trash2, CircleArrowDown, CircleArrowUp, Info, CreditCard, Check, X, Minus } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface TransactionCardProps {
-  creditCardData: CreditCards;
+  creditCardData: CreditsCards;
   isOpen: boolean;
   onOpen: (id: number) => void;
   onClose: () => void;
@@ -63,7 +63,7 @@ export default function TransactionCard({ creditCardData: { id, name, card_limit
         onTouchEnd={handleTouchEnd}
       >
         <div className="w-full flex justify-start items-center gap-4 overflow-hidden">
-          <CreditCard strokeWidth={1.5} className="w-14 text-blue-500" />
+          <CreditCard size={28} strokeWidth={1.5} className="w-14 text-blue-500" />
           <div className="flex flex-col">
             <span className="font-semibold">{name}</span>
             <span className="font-light">Limite: {formatCurrencyDisplay(card_limit)}</span>

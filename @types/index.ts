@@ -1,3 +1,3 @@
 export * from "./categories";
-export * from "./credit-card";
+export * from "./creditscard";
 export * from "./transaction";

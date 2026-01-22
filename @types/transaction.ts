@@ -8,4 +8,5 @@ export interface Transaction extends RowDataPacket {
   date: string;
   category_id: number | null;
   payment_id: number | null;
+  credit_card_id: number | null;
 }

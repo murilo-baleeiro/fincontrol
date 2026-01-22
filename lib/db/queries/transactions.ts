@@ -23,13 +23,21 @@ export async function getTransactions(limit: number): Promise<Transaction[]> {
   return rows;
 }
 
-export async function createTransaction(data: { action: "inbound" | "outbound"; description: string; value: number; date: string; category?: number; payment?: number }) {
-  const { action, description, value, date, category, payment } = data;
+export async function createTransaction(data: {
+  action: "inbound" | "outbound";
+  description: string;
+  value: number;
+  date: string;
+  category?: number;
+  payment?: number;
+  creditCard?: number;
+}) {
+  const { action, description, value, date, category, payment, creditCard } = data;
 
   const [result] = await db.execute(
-    `INSERT INTO transactions (action, description, value, date, category_id, payment_id)
-     VALUES (?, ?, ?, ?, ?, ?)`,
-    [action, description, value, date, category || null, payment || null],
+    `INSERT INTO transactions (action, description, value, date, category_id, payment_id, credit_card_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [action, description, value, date, category || null, payment || null, creditCard || null],
   );
 
   return result;

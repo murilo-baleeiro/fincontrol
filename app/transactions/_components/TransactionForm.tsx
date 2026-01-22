@@ -16,7 +16,9 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
   const today = new Date().toISOString().split("T")[0];
 
   const [payments, setPayments] = useState<{ id: string; name: string }[]>([]);
+  const [creditCards, setCreditCards] = useState<{ id: string; name: string }[]>([]);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+  const [isPaymentCredit, setIsPaymentCredit] = useState(false);
   const [form, setForm] = useState({
     action,
     description: "",
@@ -24,6 +26,7 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
     date: today,
     category: null as number | null,
     payment: null as number | null,
+    creditCard: null as number | null,
   });
 
   useEffect(() => {
@@ -34,8 +37,19 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
       date: today,
       category: null as number | null,
       payment: null as number | null,
+      creditCard: null as number | null,
     }));
   }, [action]);
+
+  useEffect(() => {
+    if (form.payment) {
+      const selectedPayment = payments.find((p) => String(p.id) === String(form.payment));
+      const isCreditPayment = selectedPayment?.name?.toLowerCase().includes("crédito") || selectedPayment?.name?.toLowerCase().includes("cartão");
+      setIsPaymentCredit(isCreditPayment || false);
+    } else {
+      setIsPaymentCredit(false);
+    }
+  }, [form.payment, payments]);
 
   useEffect(() => {
     async function loadCategories() {
@@ -58,8 +72,19 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
       }
     }
 
+    async function loadCreditCards() {
+      try {
+        const response = await fetch(`/api/credit-cards`);
+        const data = await response.json();
+        setCreditCards(data);
+      } catch (error) {
+        console.error("Erro ao carregar cartões de crédito", error);
+      }
+    }
+
     loadPayments();
     loadCategories();
+    loadCreditCards();
   }, [form.action]);
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -79,17 +104,26 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
     const parsedValue = parseCurrency(form.value);
     const parsedCategory = form.category ? parseInt(form.category as unknown as string) : null;
     const parsedPayment = form.payment ? parseInt(form.payment as unknown as string) : null;
+    const parsedCreditCard = form.creditCard ? parseInt(form.creditCard as unknown as string) : null;
 
     if (isNaN(parsedValue) || parsedValue <= 0) {
       alert("Forneça um valor válido");
       return;
     }
 
+    if (isPaymentCredit && !parsedCreditCard) {
+      alert("Selecione um cartão de crédito");
+      return;
+    }
+
     const payload = {
-      ...form,
+      action: form.action,
+      description: form.description,
       value: parsedValue,
+      date: form.date,
       category: parsedCategory,
       payment: parsedPayment,
+      creditCard: parsedCreditCard,
     };
 
     const response = await fetch("/api/transactions", {
@@ -116,6 +150,9 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
       <ComboBox label="Categoria:" options={categories} value={form.category} onChange={(id) => setForm((prev) => ({ ...prev, category: id }))} />
       {form.action === "outbound" && (
         <ComboBox label="Método Pagamento:" options={payments} value={form.payment} onChange={(id) => setForm((prev) => ({ ...prev, payment: id }))} />
+      )}
+      {isPaymentCredit && (
+        <ComboBox label="Cartão de Crédito:" options={creditCards} value={form.creditCard} onChange={(id) => setForm((prev) => ({ ...prev, creditCard: id }))} />
       )}
       <Button className="mt-2">Salvar {form.action === "inbound" ? "Receita" : "Despesa"}</Button>
     </form>
