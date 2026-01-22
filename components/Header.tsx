@@ -34,7 +34,7 @@ export default function Header() {
         </header>
 
         <section
-          className={`absolute w-1/2 h-full px-5 py-4 shadow-xl bg-white top-0 right-0 border border-gray-200 z-10 transition-all duration-200 ease-out transform ${isMenuOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 translate-x-2 pointer-events-none"}`}
+          className={`fixed max-w-xs h-full px-5 py-4 shadow-xl bg-white top-0 right-0 border border-gray-200 z-10 transition-all duration-200 ease-out transform ${isMenuOpen ? "opacity-100 translate-x-0 pointer-events-auto" : "opacity-0 translate-x-full pointer-events-none"}`}
         >
           <Link href="/configuration" className="flex items-center gap-2">
             <Wrench strokeWidth={1.25} size={20} />

@@ -1,9 +1,7 @@
-import Button from "@/components/UI/Button";
+"use client"
 
-export default function CreditCards(){
-    return (
-        <main className="px-4 mt-4">
-            <Button>Adicionar Cartão de Crédito</Button>
-        </main>
-    );
+import CreditCardForm from "./_components/CreditCardForm";
+
+export default function CreditCards() {
+  return <CreditCardForm />;
 }
