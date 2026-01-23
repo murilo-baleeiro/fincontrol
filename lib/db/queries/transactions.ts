@@ -51,9 +51,9 @@ export async function createTransaction(data: {
   category?: number;
   payment?: number;
   creditCard?: number;
+  fixedExpenseId?: number;
 }) {
-  const { action, description, value, date, category, payment, creditCard } =
-    data;
+  const { action, description, value, date, category, payment, creditCard, fixedExpenseId } = data;
 
   const conn = await db.getConnection();
 
@@ -61,17 +61,9 @@ export async function createTransaction(data: {
     await conn.beginTransaction();
     await conn.execute(
       `INSERT INTO transactions
-        (action, description, value, date, category_id, payment_id, credit_card_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [
-        action,
-        description,
-        value,
-        date,
-        category || null,
-        payment || null,
-        creditCard || null,
-      ],
+        (action, description, value, date, category_id, payment_id, credit_card_id, fixed_expense_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [action, description, value, date, category || null, payment || null, creditCard || null, fixedExpenseId || null],
     );
 
     if (category) {
@@ -95,8 +87,6 @@ export async function createTransaction(data: {
 }
 
 export async function deleteTransaction(id: number) {
-  const [result] = await db.execute(`DELETE FROM transactions WHERE id = ?`, [
-    id,
-  ]);
+  const [result] = await db.execute(`DELETE FROM transactions WHERE id = ?`, [id]);
   return result;
 }

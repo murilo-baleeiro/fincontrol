@@ -27,7 +27,7 @@ export default function MonthsCarousel({ initialMonth, onChange }: MonthsCarouse
   }
 
   return (
-    <div className="flex flex-row justify-between items-center border-b border-gray-200 pb-4">
+    <div className="flex flex-row justify-between items-center border-b border-gray-200 pb-2">
       <button className="p-2" onClick={handleDecreaseMonth}>
         <ChevronLeft strokeWidth={1.25} />
       </button>
