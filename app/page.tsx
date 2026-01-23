@@ -3,6 +3,7 @@
 import { CreditsCards } from "@/@types";
 import MonthsCarousel from "@/components/MonthsCarousel";
 import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -64,7 +65,8 @@ export default function Home() {
     <main className="flex flex-col gap-4 justify-center px-2.5 pt-4">
       <MonthsCarousel />
       <div className="flex flex-row gap-4">
-        <div className="w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-blue-500 text-white rounded-lg shadow-md">
+        {/* <div className="w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-blue-500 text-white rounded-lg shadow-md"> */}
+        <div className={twMerge("w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-blue-500 text-white rounded-lg shadow-md", balance < 0 && "bg-red-500 animate-pulse outline-2 outline-red-500 border border-white")}>
           <p className="text-sm font-light">Ativos Totais:</p>
           <p className="text-2xl font-bold">{formatCurrency(balance)}</p>
         </div>
