@@ -1,6 +1,6 @@
 # FinControl
 
-![FinControl](https://github.com/murilo-baleeiro/fincontrol/tree/main/public/images/home.jpg)
+<img src="/public/images/home.jpg" alt="Pagina Inicial" width="200" />
 
 FinControl é uma aplicação web desenvolvida para gerenciar finanças pessoais, permitindo o controle de despesas, cartões de crédito, transações e muito mais. A aplicação é construída utilizando tecnologias modernas para oferecer uma experiência rápida e intuitiva.
 
@@ -51,6 +51,6 @@ FinControl é uma aplicação web desenvolvida para gerenciar finanças pessoais
 
 ## 📸 Capturas de Tela
 
-![tranctions](https://github.com/murilo-baleeiro/fincontrol/tree/main/public/images/transacoes.jpg)
-![cards](https://github.com/murilo-baleeiro/fincontrol/tree/main/public/images/cartoes.jpg)
-![categories](https://github.com/murilo-baleeiro/fincontrol/tree/main/public/images/categorias.jpg)
+<img src="/public/images/transacoes.jpg" alt="Pagina de Trasacoes" width="200" />
+<img src="/public/images/cartoes.jpg" alt="Pagina de Cartoes de Credito" width="200" />
+<img src="/public/images/categorias.jpg" alt="Pagina de Categorias" width="200" />
