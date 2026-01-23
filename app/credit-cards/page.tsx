@@ -11,8 +11,9 @@ export default function CreditCards() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [creditCards, setCreditCards] = useState<CreditsCards[]>([]);
   const [openCardId, setOpenCardId] = useState<number | null>(null);
+  const [creditCards, setCreditCards] = useState<CreditsCards[]>([]);
+  const [editingCard, setEditingCard] = useState<CreditsCards | null>(null);
 
   useEffect(() => {
     fetchCreditCards();
@@ -60,21 +61,30 @@ export default function CreditCards() {
 
   const handleCloseForm = () => {
     setShowForm(false);
+    setEditingCard(null);
+  };
+
+  const handleEditCard = (card: CreditsCards) => {
+    setEditingCard(card);
+    setShowForm(true);
+    setOpenCardId(null);
   };
 
   return (
     <main className="px-4">
-      {!showForm && <div className="w-full mt-4 flex justify-center">
-        <button
-          className="h-10 flex-1 bg-blue-500 text-white rounded-md flex flex-row justify-center items-center gap-2 focus:ring-2 focus:ring-blue-400 focus:outline"
-          onClick={() => setShowForm(!showForm)}
-        >
-          <CreditCardIcon strokeWidth={1.5} size={20} />
-          <span>Adicionar Cartão</span>
-        </button>
-      </div>}
+      {!showForm && (
+        <div className="w-full mt-4 flex justify-center">
+          <button
+            className="h-10 flex-1 bg-blue-500 text-white rounded-md flex flex-row justify-center items-center gap-2 focus:ring-2 focus:ring-blue-400 focus:outline"
+            onClick={() => setShowForm(!showForm)}
+          >
+            <CreditCardIcon strokeWidth={1.5} size={20} />
+            <span>Adicionar Cartão</span>
+          </button>
+        </div>
+      )}
 
-      {showForm && <CreditCardFormComponent onClose={handleCloseForm} onSuccess={fetchCreditCards} />}
+      {showForm && <CreditCardFormComponent editingCard={editingCard} onClose={handleCloseForm} onSuccess={fetchCreditCards} />}
 
       {error && <p className="w-full text-center text-sm text-red-500 mt-2">{error}</p>}
 
@@ -86,8 +96,15 @@ export default function CreditCards() {
           <span>Cancelar</span>
         </button>
       )}
-      <CreditCardsList creditCards={creditCards} loading={loading} openCardId={openCardId} onOpen={handleOpenCard} onClose={handleCloseCard} onDelete={handleDeleteCreditCard} />
-
+      <CreditCardsList
+        creditCards={creditCards}
+        loading={loading}
+        openCardId={openCardId}
+        onOpen={handleOpenCard}
+        onClose={handleCloseCard}
+        onDelete={handleDeleteCreditCard}
+        onEdit={handleEditCard}
+      />
     </main>
   );
 }

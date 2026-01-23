@@ -10,9 +10,10 @@ interface CreditCardsListProps {
   onOpen: (id: number) => void;
   onClose: () => void;
   onDelete: (id: number) => void;
+  onEdit: (card: CreditsCards) => void;
 }
 
-export default function CreditCardsList({ creditCards, loading, openCardId, onOpen, onClose, onDelete }: CreditCardsListProps) {
+export default function CreditCardsList({ creditCards, loading, openCardId, onOpen, onClose, onDelete, onEdit }: CreditCardsListProps) {
   if (loading) {
     return <p className="w-full text-center text-sm text-gray-500 mt-2">Carregando...</p>;
   }
@@ -25,7 +26,15 @@ export default function CreditCardsList({ creditCards, loading, openCardId, onOp
     <section className="mt-4 space-y-4 overflow-y-scroll h-[80vh] pb-28">
       <ul className="flex flex-col gap-4">
         {creditCards.map((creditCard) => (
-          <CreditCardsCard key={creditCard.id} isOpen={openCardId === creditCard.id} onOpen={onOpen} onClose={onClose} onDelete={onDelete} creditCardData={creditCard} />
+          <CreditCardsCard
+            key={creditCard.id}
+            isOpen={openCardId === creditCard.id}
+            onOpen={onOpen}
+            onClose={onClose}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            creditCardData={creditCard}
+          />
         ))}
       </ul>
     </section>

@@ -2,21 +2,41 @@
 
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { maskCurrencyInput, parseCurrency } from "@/utils";
+import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { maskCurrencyInput, parseCurrency, formatCurrencyDisplay } from "@/utils";
+import { CreditsCards } from "@/@types";
 
 interface CreditCardFormComponentProps {
   onClose: () => void;
   onSuccess: () => void;
+  editingCard?: CreditsCards | null;
 }
 
-export default function CreditCardFormComponent({ onClose, onSuccess }: CreditCardFormComponentProps) {
+export default function CreditCardFormComponent({ onClose, onSuccess, editingCard }: CreditCardFormComponentProps) {
   const [form, setForm] = useState({
     name: "",
     card_limit: "",
     due_day: "",
     close_day: "",
   });
+
+  useEffect(() => {
+    if (editingCard) {
+      setForm({
+        name: editingCard.name,
+        card_limit: formatCurrencyDisplay(editingCard.card_limit),
+        due_day: editingCard.due_day.toString(),
+        close_day: editingCard.close_day.toString(),
+      });
+    } else {
+      setForm({
+        name: "",
+        card_limit: "",
+        due_day: "",
+        close_day: "",
+      });
+    }
+  }, [editingCard]);
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
@@ -61,23 +81,40 @@ export default function CreditCardFormComponent({ onClose, onSuccess }: CreditCa
     }
 
     try {
-      const response = await fetch("/api/credit-cards", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          card_limit: parsedLimit,
-          due_day: parsedDueDay,
-          close_day: parsedCloseDay,
-        }),
-      });
+      if (editingCard) {
+        const response = await fetch("/api/credit-cards", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: editingCard.id,
+            name: form.name,
+            card_limit: parsedLimit,
+            due_day: parsedDueDay,
+            close_day: parsedCloseDay,
+          }),
+        });
 
-      if (!response.ok) throw new Error();
+        if (!response.ok) throw new Error();
+      } else {
+        const response = await fetch("/api/credit-cards", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name,
+            card_limit: parsedLimit,
+            due_day: parsedDueDay,
+            close_day: parsedCloseDay,
+          }),
+        });
+
+        if (!response.ok) throw new Error();
+      }
+
       setForm({ name: "", card_limit: "", due_day: "", close_day: "" });
       onSuccess();
       onClose();
     } catch {
-      alert("Erro ao criar cartão de crédito.");
+      alert(editingCard ? "Erro ao atualizar cartão de crédito." : "Erro ao criar cartão de crédito.");
     }
   }
 
@@ -89,7 +126,7 @@ export default function CreditCardFormComponent({ onClose, onSuccess }: CreditCa
         <Input label="Dia do Vencimento:" name="due_day" type="number" placeholder="Ex.: 20" value={form.due_day} onChange={handleChangeInput} required min="1" max="31" />
         <Input label="Fechamento da Fatura:" name="close_day" type="number" placeholder="Ex.: 10" value={form.close_day} onChange={handleChangeInput} required min="1" max="31" />
       </div>
-      <Button className="mt-2">Salvar Cartão</Button>
+      <Button className="mt-2">{editingCard ? "Atualizar Cartão" : "Salvar Cartão"}</Button>
     </form>
   );
 }

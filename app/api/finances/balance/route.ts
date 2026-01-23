@@ -1,9 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { getTotalBalance, getTotalExpenses } from "@/lib/db";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const balance = await getTotalBalance();
+    const searchParams = request.nextUrl.searchParams;
+    const month = searchParams.get("month");
+    const year = searchParams.get("year");
+
+    const monthNum = month ? parseInt(month) : undefined;
+    const yearNum = year ? parseInt(year) : undefined;
+
+    const balance = await getTotalBalance(monthNum, yearNum);
     return NextResponse.json(
       { balance },
       {

@@ -2,7 +2,7 @@
 
 import { CreditsCards } from "@/@types";
 import { formatCurrencyDisplay } from "@/utils";
-import { Trash2, CircleArrowDown, CircleArrowUp, Info, CreditCard, Check, X, Minus } from "lucide-react";
+import { Trash2, CreditCard, Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface TransactionCardProps {
@@ -11,14 +11,16 @@ interface TransactionCardProps {
   onOpen: (id: number) => void;
   onClose: () => void;
   onDelete: (id: number) => void;
+  onEdit: (card: CreditsCards) => void;
 }
 
-export default function TransactionCard({ creditCardData: { id, name, card_limit, due_day, close_day }, isOpen, onOpen, onClose, onDelete }: TransactionCardProps) {
+export default function TransactionCard({ creditCardData, isOpen, onOpen, onClose, onDelete, onEdit }: TransactionCardProps) {
+  const { id, name, card_limit, due_day, close_day } = creditCardData;
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
 
   useEffect(() => {
-    setTranslateX(isOpen ? -80 : 0);
+    setTranslateX(isOpen ? -160 : 0);
   }, [isOpen]);
 
   function handleTouchStart(e: React.TouchEvent) {
@@ -30,7 +32,7 @@ export default function TransactionCard({ creditCardData: { id, name, card_limit
     const diff = currentX - startX;
 
     if (diff < 0) {
-      setTranslateX(Math.max(diff, -80));
+      setTranslateX(Math.max(diff, -160));
       onOpen(id);
     }
 
@@ -40,7 +42,7 @@ export default function TransactionCard({ creditCardData: { id, name, card_limit
   }
 
   function handleTouchEnd() {
-    if (translateX < -40) {
+    if (translateX < -80) {
       onOpen(id);
     } else {
       onClose();
@@ -49,9 +51,12 @@ export default function TransactionCard({ creditCardData: { id, name, card_limit
 
   return (
     <div className="relative bg-white border border-gray-200 rounded overflow-hidden">
-      <div className="absolute inset-y-0 right-0 w-20 flex items-center justify-center rounded-e bg-red-500">
-        <button onClick={() => onDelete(id)}>
-          <Trash2 className="text-white" />
+      <div className="absolute inset-y-0 right-0 w-40 flex rounded-e">
+        <button onClick={() => onEdit(creditCardData)} className="flex-1 flex items-center justify-center bg-blue-500 hover:bg-blue-600 transition-colors">
+          <Pencil className="text-white" size={20} />
+        </button>
+        <button onClick={() => onDelete(id)} className="flex-1 flex items-center justify-center bg-red-500 hover:bg-red-600 transition-colors">
+          <Trash2 className="text-white" size={20} />
         </button>
       </div>
 

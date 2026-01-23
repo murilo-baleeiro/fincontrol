@@ -1,14 +1,21 @@
 import { getCreditCards, getCreditCardSpent } from "@/lib/db/queries/credit-cards";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const searchParams = request.nextUrl.searchParams;
+    const month = searchParams.get("month");
+    const year = searchParams.get("year");
+
+    const monthNum = month ? parseInt(month) : undefined;
+    const yearNum = year ? parseInt(year) : undefined;
+
     const creditCards = await getCreditCards();
 
     const cardsWithUsage = await Promise.all(
       creditCards.map(async (card) => ({
         ...card,
-        spent: await getCreditCardSpent(card.id),
+        spent: await getCreditCardSpent(card.id, monthNum, yearNum),
       })),
     );
 
