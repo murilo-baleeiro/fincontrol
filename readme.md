@@ -51,6 +51,8 @@ FinControl é uma aplicação web desenvolvida para gerenciar finanças pessoais
 
 ## 📸 Capturas de Tela
 
-<img src="/public/images/transacoes.jpg" alt="Pagina de Trasacoes" width="200" />
-<img src="/public/images/cartoes.jpg" alt="Pagina de Cartoes de Credito" width="200" />
-<img src="/public/images/categorias.jpg" alt="Pagina de Categorias" width="200" />
+<div style="display: flex; flex-direction: row;">
+    <img src="/public/images/transacoes.jpg" alt="Pagina de Trasacoes" width="200" />
+    <img src="/public/images/cartoes.jpg" alt="Pagina de Cartoes de Credito" width="200" />
+    <img src="/public/images/categorias.jpg" alt="Pagina de Categorias" width="200" />
+</div>
