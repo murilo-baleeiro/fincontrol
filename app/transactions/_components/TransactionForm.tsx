@@ -142,9 +142,9 @@ export default function TransactionForm({ action, onClose, onSuccess }: Transact
 
   return (
     <form onSubmit={handleSubmitForm} className="mt-4 flex flex-col gap-2">
-      <Input label="Descrição:" name="description" placeholder="Ex.: Salário, Internet" value={form.description} onChange={handleChangeInput} required />
+      <Input label="Descrição:" name="description" placeholder="Ex.: Salário, Lanche" value={form.description} onChange={handleChangeInput} required />
       <div className="flex flex-row gap-4 items-center">
-        <Input label="Valor:" name="value" inputMode="numeric" placeholder="0,00" value={form.value} onChange={handleChangeInput} required />
+        <Input label="Valor:" name="value" inputMode="numeric" placeholder="R$ 0,00" value={form.value} onChange={handleChangeInput} required />
         <Input label="Data:" type="date" name="date" value={form.date} onChange={handleChangeInput} className="h-8.5 px-2 py-1" />
       </div>
       <ComboBox label="Categoria:" options={categories} value={form.category} onChange={(id) => setForm((prev) => ({ ...prev, category: id }))} />

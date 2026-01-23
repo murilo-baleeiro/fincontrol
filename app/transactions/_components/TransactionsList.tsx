@@ -34,7 +34,7 @@ export default function TransactionsList({ transactions, loading, error, openCar
           <TransactionCard key={transaction.id} transaction={transaction} isOpen={openCardId === transaction.id} onOpen={onOpen} onClose={onClose} onDelete={onDelete} />
         ))}
       {transactions.length > 0 && (
-        <button className="w-full py-2 bg-gray-200 rounded-md text-gray-700 hover:bg-gray-300 transition-colors" onClick={onLoadMore}>
+        <button className="w-full text-gray-300" onClick={onLoadMore}>
           Ver mais
         </button>
       )}

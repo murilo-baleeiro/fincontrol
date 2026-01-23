@@ -23,6 +23,26 @@ export async function getTransactions(limit: number): Promise<Transaction[]> {
   return rows;
 }
 
+// export async function createTransaction(data: {
+//   action: "inbound" | "outbound";
+//   description: string;
+//   value: number;
+//   date: string;
+//   category?: number;
+//   payment?: number;
+//   creditCard?: number;
+// }) {
+//   const { action, description, value, date, category, payment, creditCard } = data;
+
+//   const [result] = await db.execute(
+//     `INSERT INTO transactions (action, description, value, date, category_id, payment_id, credit_card_id)
+//      VALUES (?, ?, ?, ?, ?, ?, ?)`,
+//     [action, description, value, date, category || null, payment || null, creditCard || null],
+//   );
+
+//   return result;
+// }
+
 export async function createTransaction(data: {
   action: "inbound" | "outbound";
   description: string;
@@ -32,18 +52,51 @@ export async function createTransaction(data: {
   payment?: number;
   creditCard?: number;
 }) {
-  const { action, description, value, date, category, payment, creditCard } = data;
+  const { action, description, value, date, category, payment, creditCard } =
+    data;
 
-  const [result] = await db.execute(
-    `INSERT INTO transactions (action, description, value, date, category_id, payment_id, credit_card_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [action, description, value, date, category || null, payment || null, creditCard || null],
-  );
+  const conn = await db.getConnection();
 
-  return result;
+  try {
+    await conn.beginTransaction();
+    await conn.execute(
+      `INSERT INTO transactions
+        (action, description, value, date, category_id, payment_id, credit_card_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        action,
+        description,
+        value,
+        date,
+        category || null,
+        payment || null,
+        creditCard || null,
+      ],
+    );
+
+    if (category) {
+      await conn.execute(
+        `
+        UPDATE categories
+        SET usage_count = usage_count + 1
+        WHERE id = ?
+        `,
+        [category],
+      );
+    }
+
+    await conn.commit();
+  } catch (error) {
+    await conn.rollback();
+    throw error;
+  } finally {
+    conn.release();
+  }
 }
 
 export async function deleteTransaction(id: number) {
-  const [result] = await db.execute(`DELETE FROM transactions WHERE id = ?`, [id]);
+  const [result] = await db.execute(`DELETE FROM transactions WHERE id = ?`, [
+    id,
+  ]);
   return result;
 }

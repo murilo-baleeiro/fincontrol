@@ -84,7 +84,7 @@ export default function CreditCardFormComponent({ onClose, onSuccess }: CreditCa
   return (
     <form className="mt-4 flex flex-col gap-2" onSubmit={handleSubmitForm}>
       <Input label="Nome do Cartão/Banco:" name="name" placeholder="Ex.: Crédito Nubank, Débito Santander" value={form.name} onChange={handleChangeInput} required />
-      <Input label="Limite Total:" name="card_limit" inputMode="numeric" placeholder="0,00" value={form.card_limit} onChange={handleChangeInput} required />
+      <Input label="Limite Total:" name="card_limit" inputMode="numeric" placeholder="R$ 0,00" value={form.card_limit} onChange={handleChangeInput} required />
       <div className="flex flex-row gap-2">
         <Input label="Dia do Vencimento:" name="due_day" type="number" placeholder="Ex.: 20" value={form.due_day} onChange={handleChangeInput} required min="1" max="31" />
         <Input label="Fechamento da Fatura:" name="close_day" type="number" placeholder="Ex.: 10" value={form.close_day} onChange={handleChangeInput} required min="1" max="31" />

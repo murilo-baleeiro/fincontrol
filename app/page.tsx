@@ -1,6 +1,7 @@
 "use client";
 
 import { CreditsCards } from "@/@types";
+import MonthsCarousel from "@/components/MonthsCarousel";
 import { useEffect, useState } from "react";
 
 function formatCurrency(value: number) {
@@ -61,14 +62,17 @@ export default function Home() {
 
   return (
     <main className="flex flex-col gap-4 justify-center px-2.5 pt-4">
-      <div className="w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-blue-500 text-white rounded-lg shadow-md">
-        <p className="text-sm font-light">Ativos Totais:</p>
-        <p className="text-2xl font-bold">{formatCurrency(balance)}</p>
-      </div>
+      <MonthsCarousel />
+      <div className="flex flex-row gap-4">
+        <div className="w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-blue-500 text-white rounded-lg shadow-md">
+          <p className="text-sm font-light">Ativos Totais:</p>
+          <p className="text-2xl font-bold">{formatCurrency(balance)}</p>
+        </div>
 
-      <div className="w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-fuchsia-600 text-white rounded-lg shadow-md">
-        <p className="text-sm font-light">Gastos Totais do Mês:</p>
-        <p className="text-2xl font-bold">{formatCurrency(expenses)}</p>
+        <div className="w-full h-24 flex flex-col justify-center items-start gap-2 pl-4 bg-fuchsia-600 text-white rounded-lg shadow-md">
+          <p className="text-sm font-light">Gastos Totais do Mês:</p>
+          <p className="text-2xl font-bold">{formatCurrency(expenses)}</p>
+        </div>
       </div>
 
       <div className="w-full rounded-lg bg-amber-500 p-4 text-white shadow-md">

@@ -64,21 +64,30 @@ export default function CreditCards() {
 
   return (
     <main className="px-4">
-      <div className="w-full mt-4 flex justify-center">
+      {!showForm && <div className="w-full mt-4 flex justify-center">
         <button
           className="h-10 flex-1 bg-blue-500 text-white rounded-md flex flex-row justify-center items-center gap-2 focus:ring-2 focus:ring-blue-400 focus:outline"
           onClick={() => setShowForm(!showForm)}
         >
           <CreditCardIcon strokeWidth={1.5} size={20} />
-          <span>{showForm ? "Cancelar" : "Adicionar Cartão"}</span>
+          <span>Adicionar Cartão</span>
         </button>
-      </div>
+      </div>}
 
       {showForm && <CreditCardFormComponent onClose={handleCloseForm} onSuccess={fetchCreditCards} />}
 
       {error && <p className="w-full text-center text-sm text-red-500 mt-2">{error}</p>}
 
+      {showForm && (
+        <button
+          className="w-full h-10 mt-3 flex-1 bg-gray-200 text-gray-400 rounded-md flex flex-row justify-center items-center gap-2 focus:ring-2 focus:ring-blue-400 focus:outline"
+          onClick={() => setShowForm(!showForm)}
+        >
+          <span>Cancelar</span>
+        </button>
+      )}
       <CreditCardsList creditCards={creditCards} loading={loading} openCardId={openCardId} onOpen={handleOpenCard} onClose={handleCloseCard} onDelete={handleDeleteCreditCard} />
+
     </main>
   );
 }
