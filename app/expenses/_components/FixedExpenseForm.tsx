@@ -5,6 +5,7 @@ import Button from "@/components/UI/Button";
 import ComboBox from "@/components/UI/ComboBox";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { maskCurrencyInput } from "@/utils";
 
 interface Category {
   id: number;
@@ -67,7 +68,6 @@ export default function FixedExpenseForm({ onClose, onSuccess, editingExpense }:
       const isCreditPayment = selectedPayment?.name?.toLowerCase().includes("crédito") || selectedPayment?.name?.toLowerCase().includes("cartão");
       setIsPaymentCredit(isCreditPayment || false);
 
-      // Limpar seleção de cartão se não for crédito
       if (!isCreditPayment) {
         setForm((prev) => ({ ...prev, credit_card_id: null }));
       }
@@ -112,8 +112,15 @@ export default function FixedExpenseForm({ onClose, onSuccess, editingExpense }:
     }
   }
 
-  const handleChangeInput = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
+
+    if (name === "value") {
+      const masked = maskCurrencyInput(value);
+      setForm((prev) => ({ ...prev, value: masked }));
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -125,13 +132,13 @@ export default function FixedExpenseForm({ onClose, onSuccess, editingExpense }:
     e.preventDefault();
 
     if (!form.description || !form.value || !form.due_day || !form.category_id || !form.payment_id) {
-      setError("Todos os campos obrigatórios devem ser preenchidos.");
+      alert("Todos os campos obrigatórios devem ser preenchidos.");
       return;
     }
 
     // Se for pagamento com crédito, validar se cartão foi selecionado
     if (isPaymentCredit && !form.credit_card_id) {
-      setError("Selecione um cartão de crédito.");
+      alert("Selecione um cartão de crédito.");
       return;
     }
 
@@ -168,24 +175,27 @@ export default function FixedExpenseForm({ onClose, onSuccess, editingExpense }:
   }
 
   return (
-    <div className="w-full mt-4 bg-white border border-gray-200 rounded-lg p-4">
+    <div className="w-full bg-white rounded-lg p-4">
       <form className="flex flex-col gap-4" onSubmit={handleSubmitForm}>
         <h2 className="font-semibold text-lg">{editingExpense ? "Editar Despesa Fixa" : "Nova Despesa Fixa"}</h2>
-
-        <Input name="description" placeholder="Descrição (ex: Netflix, Aluguel)" value={form.description} onChange={handleChangeInput} />
-
-        <Input name="value" placeholder="Valor" type="number" step="0.01" value={form.value} onChange={handleChangeInput} />
-
-        <Input name="due_day" placeholder="Dia do vencimento (1-31)" type="number" min="1" max="31" value={form.due_day} onChange={handleChangeInput} />
-
+        <Input label="Descrição:" name="description" placeholder="Descrição (ex: Netflix, Aluguel)" value={form.description} onChange={handleChangeInput} />
+        <Input label="Valor:" name="value" inputMode="numeric" placeholder="R$ 0,00" value={form.value} onChange={handleChangeInput} required />
+        <Input
+          label="Dia do vencimento (1-31):"
+          name="due_day"
+          placeholder="Dia do vencimento (1-31)"
+          type="number"
+          min="1"
+          max="31"
+          value={form.due_day}
+          onChange={handleChangeInput}
+        />
         <ComboBox label="Categoria" options={categories} value={form.category_id} onChange={(value) => handleChangeComboBox("category_id", value)} />
-
         <ComboBox label="Método de Pagamento" options={payments} value={form.payment_id} onChange={(value) => handleChangeComboBox("payment_id", value)} />
 
         {isPaymentCredit && (
           <ComboBox label="Cartão de Crédito" options={creditCards} value={form.credit_card_id} onChange={(value) => handleChangeComboBox("credit_card_id", value)} />
         )}
-
         {error && <p className="text-sm text-red-500">{error}</p>}
 
         <div className="flex flex-col gap-2">

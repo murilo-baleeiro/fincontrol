@@ -1,7 +1,7 @@
 "use client";
 
-import TransactionCard from "@/components/UI/TransactionCard";
-import TransactionCardSkeleton from "@/components/UI/TransactionCardSkeleton";
+import TransactionCard from "@/app/transactions/_components/TransactionCard";
+import TransactionCardSkeleton from "@/app/transactions/_components/TransactionCardSkeleton";
 
 interface Transaction {
   id: number;

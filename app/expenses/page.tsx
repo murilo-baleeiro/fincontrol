@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 
 import FixedExpenseForm from "./_components/FixedExpenseForm";
 import FixedExpensesList from "./_components/FixedExpensesList";
+import Button from "@/components/UI/Button";
 
 interface FixedExpense {
   id: number;
@@ -106,17 +107,7 @@ export default function Expenses() {
 
   return (
     <main className="px-4">
-      {!showForm && (
-        <div className="w-full mt-4 flex justify-center">
-          <button
-            className="h-10 flex-1 bg-green-600 text-white rounded-md flex flex-row justify-center items-center gap-2 focus:ring-2 focus:ring-green-400 focus:outline"
-            onClick={() => setShowForm(true)}
-          >
-            <Plus strokeWidth={1.5} size={20} />
-            <span>Adicionar Despesa Fixa</span>
-          </button>
-        </div>
-      )}
+      {!showForm && <Button className="mt-4" onClick={() => setShowForm(true)}>Adicionar Despesas</Button>}
 
       {showForm && <FixedExpenseForm editingExpense={editingExpense} onClose={handleCloseForm} onSuccess={fetchFixedExpenses} />}
 
