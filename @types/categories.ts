@@ -1,8 +1,15 @@
 import { RowDataPacket } from "mysql2";
 
-export interface Categories extends RowDataPacket {
+export interface Categories {
   id: number;
   name: string;
-  usage_count: number;
+  type: "inbound" | "outbound";
+  created_at: Date;
+}
+
+export interface CategoriesResult extends RowDataPacket {
+  id: number;
+  name: string;
+  type: "inbound" | "outbound";
   created_at: Date;
 }

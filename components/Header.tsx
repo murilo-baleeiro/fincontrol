@@ -12,7 +12,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const pageTitleMap: Record<string, string> = {
-    "/expenses": "Despesas Fixas",
+    "/monthly": "Mensalidades",
     "/transactions": "Transações",
     "/configuration": "Configurações",
     "/credit-cards": "Cartões de Crédito",
