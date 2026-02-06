@@ -12,11 +12,29 @@ const StretchForm = forwardRef<HTMLFormElement, StretchFormProps>(function Stret
   const formRef = useRef<HTMLFormElement>(null);
   const [showForm, setShowForm] = useState(false);
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+
+    const customEvent = {
+      ...e,
+      currentTarget: form,
+      target: form,
+      preventDefault: () => { },
+    } as FormEvent<HTMLFormElement>;
+
+    onSubmit(customEvent);
+    setShowForm(false);
+  };
+
   return (
     <>
       {showForm && (
-        <form ref={formRef} className="flex flex-col gap-4 pb-4" onSubmit={onSubmit}>
-          {children}
+        <form ref={formRef} className="flex flex-col gap-4 pb-4" onSubmit={handleSubmit}>
+          <section>
+            {children}
+          </section>
           <Button type="submit" variant="primary">
             Salvar
           </Button>
