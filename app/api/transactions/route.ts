@@ -3,15 +3,17 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 export async function POST(request: Request) {
   try {
-    const { description, value, action, date, category } = await request.json();
-    console.log("Received Transaction Data:", { description, value, action, date, category });
+    const { description, value, action, date, category, payment, creditcard } = await request.json();
+    console.log("Received Transaction Data:", { description, value, action, date, category, payment, creditcard });
 
-    const [result] = await db.execute<ResultSetHeader>("INSERT INTO transactions (description, value, action, date, category_id) VALUES (?, ?, ?, ?, ?)", [
+    const [result] = await db.execute<ResultSetHeader>("INSERT INTO transactions (description, value, action, date, category_id, payment_id, creditcard_id) VALUES (?, ?, ?, ?, ?, ?, ?)", [
       description,
       value,
       action,
       date,
       category,
+      payment,
+      creditcard,
     ]);
 
     console.log("Database Insert Result:", {
@@ -42,11 +44,15 @@ export async function GET() {
         t.action,
         t.date,
         c.name category,
+        p.name payment,
+        cc.name creditcard,
         t.created_at
-    FROM
+      FROM
         transactions t
         LEFT JOIN categories c ON t.category_id = c.id
-        ORDER BY t.created_at DESC`);
+        LEFT JOIN payments p ON t.payment_id = p.id
+        LEFT JOIN creditcards cc ON t.creditcard_id = cc.id
+        ORDER BY created_at DESC`);
         
     console.log("Fetched Transaction Data:", rows.length, "records");
     return new Response(JSON.stringify(rows), { status: 200 });

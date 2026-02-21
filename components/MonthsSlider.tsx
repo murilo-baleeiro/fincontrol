@@ -17,13 +17,15 @@ export default function MonthsCarousel({ initialMonth, onChange }: MonthsCarouse
   }
 
   function handleIncreaseMonth() {
-    setCurrentMonth((currentMonth + 1) % 12);
-    onChange && onChange((currentMonth + 1) % 12);
+    const newMonth = (currentMonth + 1) % 12;
+    setCurrentMonth(newMonth);
+    onChange && onChange(newMonth);
   }
 
   function handleDecreaseMonth() {
-    setCurrentMonth((currentMonth - 1 + 12) % 12);
-    onChange && onChange((currentMonth - 1 + 12) % 12);
+    const newMonth = (currentMonth - 1 + 12) % 12;
+    setCurrentMonth(newMonth);
+    onChange && onChange(newMonth);
   }
 
   return (

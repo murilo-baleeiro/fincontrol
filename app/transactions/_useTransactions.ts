@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent, use } from "react";
+import { useState, useEffect, useRef, FormEvent, use, ChangeEvent } from "react";
 
 interface TransactionData {
   id: number;
@@ -8,17 +8,28 @@ interface TransactionData {
   value: number;
   action: "inbound" | "outbound";
   date: string;
+  category: number | null;
+  payment: number | null;
+  creditcard: number | null;
+  created_at: string;
 }
 
 export default function useTransactions() {
   const today = new Date().toISOString().split("T")[0];
 
-  const [date, setDate] = useState(today);
   const [openCardId, setOpenCardId] = useState<number | null>(null);
-  const [transactionData, setTransactionData] = useState<TransactionData[] | null>(null);
-  const [action, setAction] = useState<"inbound" | "outbound" | null>(null);
-  const [category, setCategory] = useState<number | null>(null);
-  const [payment, setPayment] = useState<number | null>(null);
+  const [transactions, setTransactions] = useState<TransactionData[] | null>(null);
+
+  const [formData, setFormData] = useState<any>({
+    description: "",
+    value: 0,
+    action: null,
+    date: today,
+    category: null,
+    payment: null,
+    creditcard: null,
+  });
+  const [creditCards, setCreditCards] = useState<{ id: number; name: string }[] | null>(null); // Lista de cartões de crédito disponíveis
   const [categories, setCategories] = useState<{
     inbound: { id: number; name: string }[];
     outbound: { id: number; name: string }[];
@@ -28,6 +39,7 @@ export default function useTransactions() {
   useEffect(() => {
     fetchTransactionData.current();
     fetchCategories.current();
+    fetchCreditCards.current();
   }, []);
 
   const fetchTransactionData = useRef(async () => {
@@ -36,7 +48,7 @@ export default function useTransactions() {
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched Transaction Data:", data);
-        setTransactionData(data);
+        setTransactions(data);
       } else {
         console.error("Failed to fetch transaction data.");
       }
@@ -58,24 +70,41 @@ export default function useTransactions() {
     }
   });
 
+  const fetchCreditCards = useRef(async () => {
+    try {
+      const response = await fetch("/api/credit-cards");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Fetched Credit Cards:", data);
+        setCreditCards(data);
+      }
+    } catch (error) {
+      console.error("Error fetching credit cards:", error);
+    }
+  });
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-
-    const [description, value] = [formData.get("description") as string, parseFloat((formData.get("value") as string).replace(/\./g, "").replace(",", "."))];
-
-    console.log(`Descrição: ${description}\nValor: R$ ${value.toFixed(2)}\nData: ${date}\nAção: ${action}\nCategoria: ${category}\nPagamento: ${payment}`);
+    console.log("Form Data to Submit:", formData);
 
     fetch("/api/transactions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ description, value, action, date, category, payment }),
+      body: JSON.stringify(formData),
     })
       .then((response) => {
         if (response.ok) {
           console.log("Transaction data submitted successfully!");
-          e.currentTarget.reset();
+          setFormData({
+            description: "",
+            value: 0,
+            action: null,
+            date: today,
+            category: null,
+            payment: null,
+            creditcard: null,
+          });
         } else {
           console.error("Failed to submit transaction data.");
         }
@@ -84,6 +113,25 @@ export default function useTransactions() {
         console.log("Submission attempt completed.");
         fetchTransactionData.current();
       });
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.currentTarget;
+
+    if (name === "value") {
+      let value = e.target.value.replace(/\D/g, "");
+      const numberValue = Number(value) / 100;
+
+      e.target.value = numberValue.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+      setFormData((prev: any) => ({ ...prev, [name]: numberValue }));
+      return;
+    }
+
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
   };
 
   const handleDelete = (id: number) => {
@@ -104,20 +152,16 @@ export default function useTransactions() {
   };
 
   return {
-    date,
     today,
-    action,
-    payment,
-    category,
-    categories,
+    formData,
     openCardId,
-    transactionData,
-    setDate,
-    setAction,
-    setCategory,
+    categories,
+    creditCards,
+    transactions,
+    setFormData,
     handleSubmit,
+    handleChange,
     handleDelete,
     setOpenCardId,
-    setPayment,
   };
 }

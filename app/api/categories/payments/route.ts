@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const { name } = await request.json();
     if (!name) return new Response("Name is required", { status: 400 });
-    const [result] = await db.execute<ResultSetHeader>("INSERT INTO categories (name, type) VALUES (?, 'payment')", [name]);
+    const [result] = await db.execute<ResultSetHeader>("INSERT INTO payments (name) VALUES (?)", [name]);
     return new Response(JSON.stringify({ id: result.insertId, name }), { status: 201 });
   } catch (error) {
     console.error("Error creating category:", error);
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const [rows] = await db.execute("SELECT id, name FROM categories WHERE type = 'payment'");
+    const [rows] = await db.execute("SELECT id, name FROM payments");
     return new Response(JSON.stringify(rows), { status: 200 });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -28,7 +28,7 @@ export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id) return new Response("ID is required", { status: 400 });
-    await db.execute("DELETE FROM categories WHERE id = ? AND type = 'payment'", [id]);
+    await db.execute("DELETE FROM payments WHERE id = ?", [id]);
     return new Response(null, { status: 204 });
   } catch (error) {
     console.error("Error deleting category:", error);

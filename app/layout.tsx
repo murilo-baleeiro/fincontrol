@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br" className="w-full h-full overflow-hidden">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-full overflow-hidden flex flex-col`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} flex flex-col antialiased overflow-hidden`}>
         <Header />
         <main className="flex-1 overflow-hidden flex flex-col p-4">{children}</main>
         <Navbar />

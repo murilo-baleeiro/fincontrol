@@ -5,7 +5,9 @@ export async function POST(request: Request) {
   try {
     const { name } = await request.json();
     if (!name) return new Response("Name is required", { status: 400 });
-    const [result] = await db.execute<ResultSetHeader>("INSERT INTO categories (name, type) VALUES (?, 'outbound')", [name]);
+    const [result] = await db.execute<ResultSetHeader>("INSERT INTO categories (name, type) VALUES (?, 'outbound')", [
+      name,
+    ]);
     return new Response(JSON.stringify({ id: result.insertId, name }), { status: 201 });
   } catch (error) {
     console.error("Error creating category:", error);
@@ -15,7 +17,20 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const [rows] = await db.execute("SELECT id, name FROM categories WHERE type = 'outbound'");
+    // const [rows] = await db.execute("SELECT id, name FROM categories WHERE type = 'outbound'");
+    const [rows] = await db.execute(`
+      SELECT 
+          c.id,
+          c.name,
+          c.type,
+          COUNT(t.id) AS count_usage
+      FROM categories c
+      LEFT JOIN transactions t 
+          ON t.category_id = c.id
+      WHERE c.type = 'outbound'
+      GROUP BY c.id, c.name, c.type
+      ORDER BY count_usage DESC
+      `);
     return new Response(JSON.stringify(rows), { status: 200 });
   } catch (error) {
     console.error("Error fetching categories:", error);

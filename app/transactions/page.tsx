@@ -12,39 +12,93 @@ import useTransactions from "./_useTransactions";
 import ComboBox from "@/components/UI/ComboBox";
 
 export default function TransactionsPage() {
-  const { today, date, action, category, categories, openCardId, transactionData, setAction, handleSubmit, handleDelete, setDate, setOpenCardId, setCategory } = useTransactions();
+  const {
+    today,
+    formData,
+    categories,
+    openCardId,
+    creditCards,
+    transactions,
+    setFormData,
+    handleSubmit,
+    handleDelete,
+    handleChange,
+    setOpenCardId,
+  } = useTransactions();
 
   const inboundCategories = categories ? categories.inbound : [];
   const outboundCategories = categories ? categories.outbound : [];
   const paymentsCategories = categories ? categories.payments : [];
+  const creditCardsOptions = creditCards ? creditCards : [];
 
   return (
     <>
-      <StretchForm onSubmit={handleSubmit} buttons="transactions" buttonsActions={{ inbound: () => setAction("inbound"), outbound: () => setAction("outbound") }}>
-        <Input type="text" name="description" label="Descrição da Transação:" placeholder="Ex.: Mercado, Compra" required />
-        <Input type="text" name="value" label="Valor da Transação:" placeholder="R$ 0,00" inputMode="numeric" onChange={applyMoneyMask} required />
+      <StretchForm
+        onSubmit={handleSubmit}
+        buttons="transactions"
+        buttonsActions={{
+          inbound: () => setFormData({ ...formData, action: "inbound" }),
+          outbound: () => setFormData({ ...formData, action: "outbound" }),
+        }}
+      >
+        <Input
+          type="text"
+          name="description"
+          label="Descrição da Transação:"
+          placeholder="Ex.: Mercado, Compra"
+          value={formData.description}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          type="text"
+          name="value"
+          label="Valor da Transação:"
+          placeholder="R$ 0,00"
+          inputMode="numeric"
+          onChange={handleChange}
+          required
+        />
         <Input
           type="date"
           name="date"
           label="Data da Transação:"
-          placeholder="Ex.: 2024-06-15"
+          placeholder="DD/MM/AAAA"
           max={today}
-          value={date}
-          onChange={(e) => setDate(e.currentTarget.value)}
+          value={formData.date}
+          onChange={(e) => setFormData({ ...formData, date: e.currentTarget.value })}
           required
         />
         <ComboBox
           name="category"
-          options={action == "inbound" ? inboundCategories : outboundCategories}
+          options={formData.action == "inbound" ? inboundCategories : outboundCategories}
           label="Categoria:"
-          value={category}
-          onChange={(id) => setCategory(parseInt(id))}
+          value={formData.category}
+          onChange={(id) => setFormData({ ...formData, category: parseInt(id) })}
         />
-        {action == "outbound" && <ComboBox name="payments" options={paymentsCategories} label="Pagamentos:" value={category} onChange={(id) => setCategory(parseInt(id))} />}
+        {formData.action == "outbound" && (
+          <ComboBox
+            name="payment"
+            options={paymentsCategories}
+            label="Método de Pagamento:"
+            value={formData.payment}
+            onChange={(id) => setFormData({ ...formData, payment: parseInt(id) })}
+          />
+        )}
+        {paymentsCategories.find((payment) => payment.name.toLocaleLowerCase().replace("é", "e") === "credito")?.id ===
+          formData.payment && (
+          <ComboBox
+            name="creditCards"
+            options={creditCardsOptions}
+            label="Cartão:"
+            value={formData.creditcard}
+            onChange={(id) => setFormData({ ...formData, creditcard: parseInt(id) })}
+          />
+        )}
       </StretchForm>
       <ScrollableList>
-        {transactionData && transactionData.length > 0 ? (
-          transactionData.map(({ id, description, value, date, action }) => (
+        {transactions && transactions.length > 0 ? (
+          transactions.map(({ id, description, value, action, date, category, payment, creditcard, created_at }) => (
             <CardItem
               id={id}
               key={id}
@@ -55,11 +109,14 @@ export default function TransactionsPage() {
               onDelete={(id) => handleDelete(id)}
             >
               <div className="w-full flex flex-row justify-between items-center">
-                <div className="flex flex-col gap-2">
-                  <p className="font-medium">{description}</p>
-                  <p className="text-sm text-gray-500">{displayDate(date)}</p>
+                <div className="flex flex-col gap-1 flex-1">
+                  <p className="font-medium pb-0.5 flex-1">{description}</p>
+                  {/* <p className="text-xs text-gray-500">{`${category ? category : ""} ${payment ? `pago com ${payment}` : ""} ${creditcard ? `${creditcard}` : ""}`}</p> */}
+                  <p className="text-xs text-gray-500">{displayDate(date)}</p>
                 </div>
-                <p className={`font-medium ${action === "inbound" ? "text-green-500" : "text-red-500"}`}>R$ {value.toFixed(2).replace(".", ",")}</p>
+                <p className={`font-medium ${action === "inbound" ? "text-green-500" : "text-red-500"}`}>
+                  R$ {value.toFixed(2).replace(".", ",")}
+                </p>
               </div>
             </CardItem>
           ))

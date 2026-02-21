@@ -75,11 +75,14 @@ export default function InboundGroup() {
       setConfirmOpenId(null);
     }
   }
-
+ 
   return (
     <main>
       <GroupDown title="Categorias de Receitas">
-        <form className="flex flex-row gap-2 items-end justify-between border-t border-gray-200 pt-2" onSubmit={handleSubmitForm}>
+        <form
+          className="flex flex-row gap-2 items-end justify-between border-t border-gray-200 pt-2"
+          onSubmit={handleSubmitForm}
+        >
           <Input name="name" placeholder="Ex.: Freelance, Dividendos" value={form.name} onChange={handleChangeInput} />
           <Button type="submit" className="flex-1 h-8.5">
             Adicionar
