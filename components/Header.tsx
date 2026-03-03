@@ -22,7 +22,7 @@ export default function Header() {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  if (pathname != "/") {
+  if (pathname != "/" && pathname != "/auth") {
     return (
       <>
         <header className="relative w-full h-12 border-b flex flex-row justify-between items-center border-gray-200 px-4">

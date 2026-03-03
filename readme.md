@@ -49,7 +49,27 @@ FinControl é uma aplicação web desenvolvida para gerenciar finanças pessoais
 
 ---
 
-## 📸 Capturas de Tela
+## � Autenticação por Código de Acesso
+
+A aplicação agora exige que o usuário informe um *código de acesso* presente na tabela `access_code` do banco de dados. Ao enviar um código válido, um token JWT com validade de 1 hora é gerado e armazenado em um cookie **HttpOnly**. Todas as rotas da aplicação (páginas e API) são protegidas; se o token estiver ausente, inválido ou expirado, o usuário será redirecionado automaticamente para `/auth`.
+
+### Variáveis de ambiente necessárias
+
+- `DB_HOST` , `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT` – configuração do MySQL (já existentes).
+- `ACCESS_TOKEN_SECRET` – segredo usado para assinar o JWT (defina um valor forte, por exemplo `openssl rand -hex 32`).
+
+### Dependências adicionais
+
+Execute os comandos a seguir para instalar as bibliotecas necessárias:
+
+```bash
+npm install jsonwebtoken
+npm install --save-dev @types/jsonwebtoken
+```
+
+Depois disso, rode `npm install` normalmente e inicie o servidor com `npm run dev`.
+
+## �📸 Capturas de Tela
 
 <div style="display: flex; flex-direction: row;">
     <img src="/public/images/transacoes.jpg" alt="Pagina de Trasacoes" width="400" />

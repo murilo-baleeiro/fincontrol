@@ -18,7 +18,7 @@ export default function useMonthly() {
 
   const fetchMonthlyData = useRef(async () => {
     try {
-      const response = await fetch("/api/monthly");
+      const response = await fetch("/api/monthly", { credentials: "include" });
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched Monthly Data:", data);
@@ -45,6 +45,7 @@ export default function useMonthly() {
     console.log("Monthly Data:", { name, value, payday });
 
     fetch("/api/monthly", {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, value, payday }),
@@ -65,6 +66,7 @@ export default function useMonthly() {
 
   const handleDelete = (id: number) => {
     fetch(`/api/monthly?id=${id}`, {
+      credentials: "include",
       method: "DELETE",
     })
       .then((response) => {
@@ -82,6 +84,7 @@ export default function useMonthly() {
 
   const handleToggle = (id: number, checked: boolean) => {
     fetch(`/api/monthly?id=${id}`, {
+      credentials: "include",
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ active: checked, id }),

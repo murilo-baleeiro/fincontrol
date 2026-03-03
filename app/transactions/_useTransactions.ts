@@ -44,7 +44,7 @@ export default function useTransactions() {
 
   const fetchTransactionData = useRef(async () => {
     try {
-      const response = await fetch("/api/transactions");
+      const response = await fetch("/api/transactions", { credentials: "include" });
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched Transaction Data:", data);
@@ -59,7 +59,7 @@ export default function useTransactions() {
 
   const fetchCategories = useRef(async () => {
     try {
-      const response = await fetch("/api/categories");
+      const response = await fetch("/api/categories", { credentials: "include" });
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched Inbound Categories:", data);
@@ -89,6 +89,7 @@ export default function useTransactions() {
     console.log("Form Data to Submit:", formData);
 
     fetch("/api/transactions", {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
@@ -136,6 +137,7 @@ export default function useTransactions() {
 
   const handleDelete = (id: number) => {
     fetch(`/api/transactions?id=${id}`, {
+      credentials: "include",
       method: "DELETE",
     })
       .then((response) => {

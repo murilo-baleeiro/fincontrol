@@ -1,91 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { monetaryFormatting } from "@/utils";
 import ColorCard from "@/components/UI/ColorCard";
 import MonthsSlider from "@/components/MonthsSlider";
 import DonutChart from "@/components/UI/DonutChart";
-
-interface CreditCardUsage {
-  creditcard_id: number;
-  creditcard_name: string;
-  creditcard_usage: number;
-  creditcard_limit: number;
-}
+import useHome from "./_useHome";
 
 export default function Home() {
-  const [balance, setBalance] = useState(0);
-  const [expenses, setExpenses] = useState(0);
-  const [expensesByCategory, setExpensesByCategory] = useState([]);
-  const [creditCardsUsage, setCreditCardsUsage] = useState<CreditCardUsage[]>([]);
-
-  const [month, setMonth] = useState(new Date().getMonth());
-  const [year] = useState(new Date().getFullYear());
-
-  const mockCategoryUsage = [
-    { label: "Moradia", value: 1800, color: "#0EA5E9" },
-    { label: "Alimentacao", value: 920, color: "#F97316" },
-    { label: "Transporte", value: 540, color: "#22C55E" },
-    { label: "Saude", value: 420, color: "#F59E0B" },
-    { label: "Lazer", value: 360, color: "#A855F7" },
-  ];
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const response = await fetch(`/api/finances/balance?month=${month + 1}&year=${year}`);
-        if (response.ok) {
-          const data = await response.json();
-          setBalance(data.total_balance);
-          setExpenses(data.total_outbound);
-        } else {
-          console.error("Failed to fetch balance data.");
-        }
-      } catch (error) {
-        console.error("Error fetching balance data:", error);
-      }
-    };
-
-    fetchBalance();
-
-    const fetchCreditCardsUsage = async () => {
-      try {
-        const response = await fetch(`/api/finances/creditcards-usage?month=${month + 1}&year=${year}`);
-        if (response.ok) {
-          const data = await response.json();
-          setCreditCardsUsage(data);
-        } else {
-          console.error("Failed to fetch credit cards usage data.");
-        }
-      } catch (error) {
-        console.error("Error fetching credit cards usage data:", error);
-      }
-    };
-
-    fetchCreditCardsUsage();
-
-    const fetchExpensesBycategories = async () => {
-      try {
-        const response = await fetch(`/api/finances/expenses-by-category?month=${month + 1}&year=${year}`);
-        if (response.ok) {
-          const data = await response.json();
-          setExpensesByCategory(data);
-        } else {
-          console.error("Failed to fetch expenses by category data.");
-        }
-      } catch (error) {
-        console.error("Error fetching expenses by category data:", error);
-      }
-    };
-
-    fetchExpensesBycategories();
-  }, [month, year]);
-
-  function handleMonthChange(value: number) {
-    setMonth(value);
-  }
+  const { balance, expenses, expensesByCategory, creditCardsUsage, month, handleMonthChange } = useHome();
 
   return (
     <main className={`overflow-auto pb-20 pt-12 flex flex-col gap-4 ${usePathname() === "/" && "pt-15"}`}>

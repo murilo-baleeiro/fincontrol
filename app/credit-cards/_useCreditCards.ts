@@ -17,7 +17,7 @@ export default function useCreditCards() {
 
   const fetchCreditCardData = useRef(async () => {
     try {
-      const response = await fetch("/api/credit-cards");
+      const response = await fetch("/api/credit-cards", { credentials: "include" });
       if (response.ok) {
         const data = await response.json();
         console.log("Fetched Credit Card Data:", data);
@@ -44,6 +44,7 @@ export default function useCreditCards() {
     console.log("Credit Card Data:", { name, cardlimit, payday });
 
     fetch("/api/credit-cards", {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, cardlimit, payday }),
@@ -64,6 +65,7 @@ export default function useCreditCards() {
 
   const handleDelete = (id: number) => {
     fetch(`/api/credit-cards?id=${id}`, {
+      credentials: "include",
       method: "DELETE",
     })
       .then((response) => {

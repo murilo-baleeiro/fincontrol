@@ -29,11 +29,23 @@ export async function GET(request: NextRequest) {
     `,
       [parseInt(month), parseInt(year)],
     );
-    const rowsWithColor = rows.map((row) => ({
+
+    const colorPalette = [
+      "#EF4444", // Vermelho
+      "#10B981", // Verde
+      "#3B82F6", // Azul
+      "#F97316", // Laranja
+      "#8B5CF6", // Roxo
+      "#06B6D4", // Ciano
+      "#EC4899", // Rosa
+      "#FBBF24", // Amarelo
+      "#6366F1", // Índigo
+      "#14B8A6", // Turquesa
+    ];
+
+    const rowsWithColor = rows.map((row, index) => ({
       ...row,
-      color: `#${Math.floor(Math.random() * 0xffffff)
-        .toString(16)
-        .padStart(6, "0")}`,
+      color: colorPalette[index % colorPalette.length],
     }));
 
     return new Response(JSON.stringify(rowsWithColor), {

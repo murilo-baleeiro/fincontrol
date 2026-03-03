@@ -23,7 +23,7 @@ export default function OutboundGroup() {
 
   async function fetchCategories() {
     try {
-      const response = await fetch("/api/categories/outbound");
+      const response = await fetch("/api/categories/outbound", { credentials: "include" });
       if (!response.ok) throw new Error();
 
       const data = await response.json();
@@ -46,6 +46,7 @@ export default function OutboundGroup() {
 
     try {
       const response = await fetch("/api/categories/outbound", {
+        credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -63,6 +64,7 @@ export default function OutboundGroup() {
   async function handleDeleteCategory(id: number) {
     try {
       const response = await fetch(`/api/categories/outbound?id=${id}`, {
+        credentials: "include",
         method: "DELETE",
       });
 

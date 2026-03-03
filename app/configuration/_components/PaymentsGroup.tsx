@@ -23,7 +23,7 @@ export default function PaymentsGroup() {
 
   async function fetchCategories() {
     try {
-      const response = await fetch("/api/categories/payments");
+      const response = await fetch("/api/categories/payments", { credentials: "include" });
       if (!response.ok) throw new Error();
 
       const data = await response.json();
@@ -46,6 +46,7 @@ export default function PaymentsGroup() {
 
     try {
       const response = await fetch("/api/categories/payments", {
+        credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -63,6 +64,7 @@ export default function PaymentsGroup() {
   async function handleDeleteCategory(id: number) {
     try {
       const response = await fetch(`/api/categories/payments?id=${id}`, {
+        credentials: "include",
         method: "DELETE",
       });
 
